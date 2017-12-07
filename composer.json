@@ -1,0 +1,26 @@
+{
+    "name": "whitecube/kabas-admin",
+    "description": "An admin interface to drop into your laravel projects",
+    "authors": [
+        {
+            "name": "Adrien Leloup",
+            "email": "adrien@whitecube.be"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "WhiteCube\\Admin\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "WhiteCube\\Admin\\AdminServiceProvider"
+            ],
+            "aliases": {
+                "Admin": "WhiteCube\\Admin\\Facades\\Admin"
+            }
+        }
+    },
+    "require": {}
+}
