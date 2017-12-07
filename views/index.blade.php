@@ -15,7 +15,7 @@
             <template slot="edit">Edit this page</template>
             <template slot="editedlabel">Last modified</template>
             <template slot="edited">{{ $page->lastModified()->format('d-m-Y H:i') }}</template>
-            <template slot="description">{{ str_limit('test') }}</template>
+            <template slot="description">{{ str_limit($page->meta['fr']->description, 155) }}</template>
             <template slot="view">View this page</template>
         </card>
     @endforeach 

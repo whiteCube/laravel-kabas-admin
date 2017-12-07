@@ -14,6 +14,8 @@ class Page {
     public $url;
     public $name;
     public $fields;
+    public $title;
+    public $meta;
 
     public function __construct($structure)
     {
@@ -42,8 +44,15 @@ class Page {
         $values = [];
         foreach(Admin::locales() as $locale) {
             $values[$locale] = $this->loadValue($locale);
+            $this->setMetadata($values[$locale], $locale);
             $this->insertIntoField($values[$locale], $locale);
         }
+    }
+
+    protected function setMetadata($data, $locale)
+    {
+        $this->title[$locale] = $data->title;
+        $this->meta[$locale] = $data->meta;
     }
 
     protected function insertIntoField($values, $locale)
@@ -88,6 +97,40 @@ class Page {
         }
         sort($timestamps);
         return Carbon::createFromTimestamp($timestamps[count($timestamps) - 1]);
+    }
+
+    public function metaGroupStructure($lang)
+    {
+        $structure = [
+            "title" => (object) [
+                "type" => "text",
+                "label" => "Title",
+                "name" => $lang .'|title',
+            ],
+            "meta" => (object) [
+                "type" => "group",
+                "label" => "Meta",
+                "options" => (object) []
+            ]
+        ];
+
+        foreach($this->config->meta as $key => $field) {
+            $structure['meta']->options->$key = $field;
+        }
+
+        return htmlentities(json_encode($structure));
+    }
+
+    public function metaGroupValues($lang)
+    {
+        $values = [
+            "title" => $this->title[$lang]
+        ];
+        foreach($this->meta[$lang] as $key => $value) {
+            $values["meta"][$key] = $value;
+        }
+
+        return htmlentities(json_encode($values));
     }
 
 }
