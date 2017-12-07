@@ -18,7 +18,7 @@ class Field {
             return $this->callUserShowMethod($lang);
         }
 
-        return '<genericfield name="' . $lang . '|' .$this->key . '" :structure="' . json_encode($this->structure) . '" value="' . $this->values[$locale] . '" ></genericfield>';
+        return '<genericfield name="' . $lang . '|' .$this->key . '" :structure="' . htmlspecialchars(json_encode($this->structure, ENT_QUOTES)) . '" value="' . $this->values[$lang] . '" ></genericfield>';
     }
 
     protected function callUserShowMethod($lang)
@@ -31,6 +31,11 @@ class Field {
     public function setValue($value, $locale)
     {
         $this->values[$locale] = $value;
+    }
+
+    public function value($lang)
+    {
+        return $this->values[$lang];
     }
 
 }

@@ -61,7 +61,8 @@ class Page {
 
     public function value($key, $lang)
     {
-        return $this->values[$lang]->$key ?? 'not found';
+        if(!isset($this->fields->$key)) return 'not found';
+        return $this->fields->$key->value($lang) ?? 'not found';
     }
 
     public function setValues($values)
