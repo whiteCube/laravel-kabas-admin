@@ -9,7 +9,7 @@ This package generates a Kabas-style admin interface for your Laravel projects.
 
 Don't forget `php artisan vendor:publish` to copy the necessary configuration file to `config/kabas-admin.php` and the assets to your project directory.
 
-Within the config file, you must specify the middleware which will be used to protect your admin interface, and other very important things. Please have a look.
+Within the config file, you must specify the [middleware](https://laravel.com/docs/5.5/middleware) which will be used to protect your admin interface, and other very important things. Please have a look.
 
 You must also add the following to the `disks` array in `config/filesystems.php`.  
 You are free to change these to whatever you think is best.
@@ -61,8 +61,8 @@ Here's an example of what it could contain:
 The first entry, with the key `"kabas"`, is used to store some general configuration for the page. It must contain a `"name"` which will be displayed in the navigation links and such, and `"icon"` is used to show a beautiful decorative icon on the page's card. You can find a list of available icons [here](./icons.png).
 > Please note: you must reference the name of the icon without the `.svg` extension.
 
-The other entries are a list of the fields you wish to have for the page. each is an object that must contain at least a `"type"` and a `"label"`. The type must refer to one of the available field types, and the label is the text that is displayed above the field.  
-Here is a [reference to all the supported field types and their respective configuration json](https://kabas.io/fieldtypes/).
+The other entries are a list of the fields you wish to have for the page. Each is an object that must contain at least a `"type"` and a `"label"`. The type must refer to one of the available field types, and the label is the text that is displayed above the field.  
+Here is a [reference of all the supported field types and their respective configuration json](https://kabas.io/fieldtypes/).
 
 ## Models
 
