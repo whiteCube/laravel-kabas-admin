@@ -1,0 +1,40 @@
+.tabs {
+
+    &__link {
+        padding: 10px 15px;
+        display: inline-block;
+        border: 1px solid #ddd;
+        border-radius: 3px 3px 0 0;
+        border-bottom: none;
+        text-decoration: none;
+        color: black;
+        text-align: center;
+        position: relative;
+        min-width: 100px;
+
+        &--active {
+            font-weight: 700;
+
+            &:after {
+                content: '';
+                display: block;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                height: 1px;
+                right: 0;
+                background: white;
+            }
+        }
+    }
+
+    &__item {
+        padding: 45px;
+        border: 1px solid #ddd;
+        display: none;
+
+        &--active {
+            display: block;
+        }
+    }
+}

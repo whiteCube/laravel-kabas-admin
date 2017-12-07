@@ -1,0 +1,11 @@
+.topbar {
+    margin-bottom: s(40);
+    width: 100%;
+
+    &__link {
+        float: right;
+        display: block;
+        line-height: s(42);
+        transition: color 200ms $ease-out-quad;
+    }
+}

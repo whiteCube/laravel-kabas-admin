@@ -1,0 +1,33 @@
+body {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 15px;
+    margin: 60px auto 60px 300px;
+    color: $cAnthracite1;
+    background-color: rgb(241, 241, 241);
+}
+
+.container {
+    max-width: s($ws_sGridzTotalWidth);
+    margin: 0 auto;
+    height: 100%;
+    position: relative;
+}
+
+.main {
+    padding: s(40);
+    border-radius: 6px;
+    background: $cWhite;
+    margin-bottom: s(60);
+}
+
+.sro {
+    @include hidden();
+}
+
+a {
+    cursor: pointer;
+}
+
+*:focus {
+    outline: none;
+}
