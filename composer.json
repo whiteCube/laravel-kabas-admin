@@ -1,10 +1,18 @@
 {
-    "name": "whitecube/kabas-admin",
-    "description": "An admin interface to drop into your laravel projects",
+    "name": "whitecube/laravel-kabas-admin",
+    "description": "A Kabas-style administration interface for your Laravel projects.",
     "authors": [
         {
             "name": "Adrien Leloup",
             "email": "adrien@whitecube.be"
+        },
+        {
+            "name": "Toon Van den Bos",
+            "email": "toon@whitecube.be"
+        },
+        {
+            "name": "WhiteCube",
+            "email": "hello@whitecube.be"
         }
     ],
     "autoload": {
