@@ -7,7 +7,7 @@
     <link href="/vendor/kabas-admin/app.css" rel="stylesheet" type="text/css">
 
     {{-- custom styles --}}
-    <link href="/vendor/kabas-admin/styles.css" rel="stylesheet" type="text/css">
+    {{-- <link href="/vendor/kabas-admin/admin.css" rel="stylesheet" type="text/css"> --}}
 
     {{-- User styles --}}
     @foreach(Admin::stylesheets() as $stylesheet)
@@ -103,11 +103,19 @@
         }
     }
 }'>
-        @include('admin::nav')
-        
-        <main class="main">
-            @yield('main')
-        </main>
+        <header class="header">
+            <div class="container">
+                
+            </div>
+            <span class="header__bottom"></span>
+        </header>
+        <div class="container">
+            @include('admin::nav')
+            
+            <main class="main">
+                @yield('main')
+            </main>
+        </div>
         
     </div>
 

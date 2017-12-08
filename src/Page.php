@@ -16,6 +16,7 @@ class Page {
     public $fields;
     public $title;
     public $meta;
+    protected $defaultFields = 'default-fields.json';
 
     public function __construct($structure)
     {
@@ -45,7 +46,7 @@ class Page {
         foreach(Admin::locales() as $locale) {
             $values[$locale] = $this->loadValue($locale);
             $this->setMetadata($values[$locale], $locale);
-            $this->insertIntoField($values[$locale], $locale);
+            $this->insertIntoFields($values[$locale], $locale);
         }
     }
 
@@ -55,9 +56,10 @@ class Page {
         $this->meta[$locale] = $data->meta;
     }
 
-    protected function insertIntoField($values, $locale)
+    protected function insertIntoFields($values, $locale)
     {
         foreach($values as $key => $value) {
+            if($key === 'title') $this->title[$locale] = $value;
             if(!isset($this->fields->$key)) continue;
             $this->fields->$key->setValue($value, $locale);
         }
@@ -76,10 +78,10 @@ class Page {
 
     public function setValues($values)
     {
-        // TODO: Rework this to work with the Field class
-        // foreach($this->values as $lang => $data) {
-        //     $this->values[$lang] = (object) array_merge((array) $data, $values[$lang]);
-        // }
+        dd($values);
+        foreach($values as $lang => $data) {
+            $this->insertIntoFields($data, $lang);
+        }
     }
 
     public function save()
@@ -101,23 +103,16 @@ class Page {
 
     public function metaGroupStructure($lang)
     {
-        $structure = [
-            "title" => (object) [
-                "type" => "text",
-                "label" => "Title",
-                "name" => $lang .'|title',
-            ],
-            "meta" => (object) [
-                "type" => "group",
-                "label" => "Meta",
-                "options" => (object) []
-            ]
+        $structure = json_decode(file_get_contents(__DIR__ . '/' . $this->defaultFields));
+        if(!isset($this->config->meta)) return htmlentities(json_encode($structure));
+        $structure->meta = (object) [
+            "type" => "group",
+            "label" => "Meta",
+            "options" => (object) []
         ];
-
         foreach($this->config->meta as $key => $field) {
-            $structure['meta']->options->$key = $field;
+            $structure->meta->options->$key = $field;
         }
-
         return htmlentities(json_encode($structure));
     }
 

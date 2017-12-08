@@ -1,0 +1,9 @@
+{
+    "title": {
+        "type": "text",
+        "label": "Title",
+        "rules": {
+            "limit": 30
+        }
+    }
+}
