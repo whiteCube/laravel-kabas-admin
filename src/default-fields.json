@@ -5,5 +5,10 @@
         "rules": {
             "limit": 30
         }
+    },
+    "meta": {
+        "type": "group",
+        "label": "Meta",
+        "options": {}
     }
 }
