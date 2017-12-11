@@ -17,8 +17,10 @@ class Field {
         if(isset($this->structure->controllers->show)) {
             return $this->callUserShowMethod($lang);
         }
-
-        return '<genericfield name="' . $lang . '|' .$this->key . '" :structure="' . htmlspecialchars(json_encode($this->structure, ENT_QUOTES)) . '" value="' . $this->values[$lang] . '" ></genericfield>';
+        return '<genericfield 
+                    name="' . $lang . '|' .$this->key . '" 
+                    :structure="' . htmlspecialchars(json_encode($this->structure, ENT_QUOTES)) . '" 
+                    :value="' . htmlspecialchars(json_encode($this->values[$lang])) . '" ></genericfield>';
     }
 
     protected function callUserShowMethod($lang)
