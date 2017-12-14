@@ -16,6 +16,7 @@ class Page {
     public $fields;
     public $title;
     public $meta;
+    public $groups;
     protected $defaultFields = 'default-fields.json';
 
     public function __construct($structure)
@@ -24,6 +25,7 @@ class Page {
         $this->file = str_replace('structures/', '', $structure);
         $this->url = str_replace('.json', '', $structure);
         $this->fields = $this->loadFields();
+        $this->groups = $this->extractTabbedGroups();
         $this->config = $this->fields->kabas;
         $this->name = $this->fields->kabas->name;
         unset($this->fields->kabas);
@@ -45,7 +47,7 @@ class Page {
         $values = [];
         foreach(Admin::locales() as $locale) {
             $values[$locale] = $this->loadValue($locale);
-            $this->setMetadata($values[$locale]->title, $values[$locale]->meta, $locale);
+            $this->setMetadata($values[$locale]->kabas_title, $values[$locale]->meta, $locale);
             $this->insertIntoFields((object) $values[$locale], $locale);
         }
     }
@@ -59,11 +61,13 @@ class Page {
     protected function insertIntoFields($values, $locale)
     {
         if(!isset($values->meta)) $values->meta = $this->extractMetaValues($values);
-        $this->setMetadata($values->title, $values->meta, $locale);
+        $this->setMetadata($values->kabas_title, $values->meta, $locale);
         foreach($values as $key => $value) {
-            if($key === 'title' || $key === 'meta') continue;
-            if(!isset($this->fields->$key)) continue;
-            $this->fields->$key->setValue($value, $locale);
+            if($key === 'kabas_title' || $key === 'meta') continue;
+            if(isset($this->fields->$key)) $this->fields->$key->setValue($value, $locale);
+            if(isset($this->groups->$key)) {
+                $this->groups->$key->setValue($value, $locale);
+            }
         }
     }
 
@@ -99,9 +103,7 @@ class Page {
     public function save()
     {
         foreach($this->getValues() as $lang => $data) {
-            $oldValues = json_decode(Storage::disk('admin_values')->get($lang . '/static/' . $this->file), true);
-            $values = array_replace_recursive($oldValues, (array) $data);
-            Storage::disk('admin_values')->put($lang . '/static/' . $this->file, json_encode($values, JSON_PRETTY_PRINT));
+            Storage::disk('admin_values')->put($lang . '/static/' . $this->file, json_encode($data, JSON_PRETTY_PRINT));
         }
     }
 
@@ -110,9 +112,9 @@ class Page {
         $values = new \stdClass;
         foreach(Admin::locales() as $locale) {
             $values->$locale = new \stdClass;
-            $values->$locale->title = $this->title[$locale];
+            $values->$locale->kabas_title = $this->title[$locale];
             $values->$locale->meta = $this->meta[$locale];
-            foreach($this->fields as $key => $field) {
+            foreach(array_merge((array) $this->fields, (array) $this->groups) as $key => $field) {
                 $values->$locale->$key = $field->value($locale);
             }
         }
@@ -157,13 +159,35 @@ class Page {
     public function metaGroupValues($lang)
     {
         $values = [
-            "title" => $this->title[$lang]
+            "kabas_title" => $this->title[$lang]
         ];
         foreach($this->meta[$lang] as $key => $value) {
             $values["meta"][$key] = $value;
         }
 
         return htmlentities(json_encode($values));
+    }
+
+    protected function extractTabbedGroups()
+    {
+        $tabbed = new \stdClass;
+        foreach($this->fields as $key => $field) {
+            if(!isset($field->type)) continue;
+            if($field->type == 'group' && isset($field->structure->tabbed) && $field->structure->tabbed) {
+                $tabbed->$key = $field;
+                unset($this->fields->$key);
+            }
+        }
+        return $tabbed;
+    }
+
+    public function getRoute()
+    {
+        try {
+            return route($this->url);
+        } catch (\Exception $e) {
+            return '';
+        }
     }
 
 }

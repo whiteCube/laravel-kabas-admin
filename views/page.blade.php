@@ -6,7 +6,9 @@
         <div class="topbar__text">
             <h2 class="topbar__title">{{ $page->name }}</h2>
         </div>
-        <a class="topbar__link link" target="_blank" href="{{ route($page->url) }}">{{ route($page->url) }}</a>
+        @if($page->getRoute())
+        <a class="topbar__link link" target="_blank" href="{{ $page->getRoute() }}">{{ $page->getRoute() }}</a>
+        @endif
     </div>
     <form class="page__form" method="POST" action="{{ route('kabas.admin.page.submit') }}">
         {{ csrf_field() }}
@@ -19,14 +21,36 @@
             </div>
         @foreach (Admin::locales() as $i => $lang)
             <div class="tabs__item{{ $i == 0 ? ' tabs__item--active' : '' }}" id="{{ $lang }}">
-            <groupfield label="Page" :options="{!! $page->metaGroupStructure($lang) !!}" :values="{!! $page->metaGroupValues($lang) !!}"></groupfield>
-            @foreach ($page->fields as $key => $field)
-                {!! $field->render($lang) !!}
-            @endforeach
+                <div class="page__side">
+                    <h3 class="page__sidetitle">Zones modifiables</h3>
+                    <ul class="page__groups">
+                        <li class="page__group">
+                            <a class="page__grouplink page__grouplink--general page__grouplink--current" href="#{{$lang}}-kabas-general">General</a>
+                        </li>
+                    @foreach($page->groups as $key => $group)
+                        <li class="page__group">
+                            <a class="page__grouplink" href="#{{$lang}}-{{ $key }}">{{ $group->label }}</a>
+                        </li>
+                    @endforeach
+                    </ul>
+                </div>
+                <div class="page__editables">
+                    <div class="page__editable page__editable--general" id="{{$lang}}-kabas-general">
+                        <groupfield label="Page" :options="{!! $page->metaGroupStructure($lang) !!}" :values="{!! $page->metaGroupValues($lang) !!}"></groupfield>
+                        @foreach ($page->fields as $key => $field)
+                            {!! $field->render($lang) !!}
+                        @endforeach
+                    </div>
+                    @foreach($page->groups as $key => $group)
+                    <div class="page__editable page__editable--hidden" id="{{$lang}}-{{ $key }}">
+                        {!! $group->render($lang) !!}
+                    </div>
+                    @endforeach
+                </div>
             </div>
         @endforeach
         </div>
-        <submit></submit>
+        <submit class="page__submit"></submit>
     </form>
 </section>
 @endsection

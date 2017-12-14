@@ -10,7 +10,7 @@
     
     <section>
     @foreach($pages as $page)
-        <card edit="{{ route('kabas.admin.page', ['file' => $page->url]) }}" view="{{ route($page->url) }}" icon="{{ $page->config->icon ?? 'home' }}">
+        <card edit="{{ route('kabas.admin.page', ['file' => $page->url]) }}" view="{{ $page->getRoute() }}" icon="{{ $page->config->icon ?? 'liste' }}">
             <template slot="title">{{ $page->name }}</template>
             <template slot="edit">Edit this page</template>
             <template slot="editedlabel">Last modified</template>
