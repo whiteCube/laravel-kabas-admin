@@ -67,9 +67,12 @@ class Field {
 
     public function value($lang)
     {
-        // echo "\">";
-        // dd($this, $this->values[$lang]);
         return $this->values[$lang] ?? '';
+    }
+
+    public function isTabbedGroup()
+    {
+        return $this->type == 'group' && ($this->structure->tabbed ?? false);
     }
 
 }

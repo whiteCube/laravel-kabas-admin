@@ -3,7 +3,6 @@
 namespace WhiteCube\Admin;
 
 use WhiteCube\Admin\Facades\Admin as Admin;
-use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 
 class Page {
@@ -34,40 +33,47 @@ class Page {
 
     protected function loadFields()
     {
-        $fields = json_decode(Storage::disk('admin_structures')->get($this->structure));
+        $fields = Storage::structure($this->structure);
         foreach($fields as $key => $field) {
-            if($key == 'kabas') { $fields->kabas = $field; continue; }
+            if($key == 'kabas') continue;
             $fields->$key = new Field($key, $field);
         }
         return $fields;
     }
 
+    protected function extractTabbedGroups()
+    {
+        $tabbed = new \stdClass;
+        foreach($this->fields as $key => $field) {
+            if($key == 'kabas' || !$field->isTabbedGroup()) continue;
+            $tabbed->$key = $field;
+            unset($this->fields->$key);
+        }
+        return $tabbed;
+    }
+
     protected function loadValues()
     {
-        $values = [];
         foreach(Admin::locales() as $locale) {
-            $values[$locale] = $this->loadValue($locale);
-            $this->setMetadata($values[$locale]->kabas_title, $values[$locale]->meta, $locale);
-            $this->insertIntoFields((object) $values[$locale], $locale);
+            $values = Storage::values($locale, $this->file);
+            $this->insertIntoFields((object) $values, $locale);
         }
     }
 
-    protected function setMetadata($title = '', $meta = [], $locale)
+    protected function setMetadata($values, $locale)
     {
-        $this->title[$locale] = $title;
-        $this->meta[$locale] = $meta;
+        $this->title[$locale] = $values->kabas_title;
+        $this->meta[$locale] = $values->meta;
     }
 
     protected function insertIntoFields($values, $locale)
     {
         if(!isset($values->meta)) $values->meta = $this->extractMetaValues($values);
-        $this->setMetadata($values->kabas_title, $values->meta, $locale);
+        $this->setMetadata($values, $locale);
         foreach($values as $key => $value) {
             if($key === 'kabas_title' || $key === 'meta') continue;
             if(isset($this->fields->$key)) $this->fields->$key->setValue($value, $locale);
-            if(isset($this->groups->$key)) {
-                $this->groups->$key->setValue($value, $locale);
-            }
+            if(isset($this->groups->$key)) $this->groups->$key->setValue($value, $locale);
         }
     }
 
@@ -82,14 +88,8 @@ class Page {
         return $meta;
     }
 
-    protected function loadValue($locale)
-    {
-        return json_decode(Storage::disk('admin_values')->get($locale . '/static/' . $this->file));
-    }
-
     public function value($key, $lang)
     {
-        if(!isset($this->fields->$key)) return 'not found';
         return $this->fields->$key->value($lang) ?? 'not found';
     }
 
@@ -103,7 +103,7 @@ class Page {
     public function save()
     {
         foreach($this->getValues() as $lang => $data) {
-            Storage::disk('admin_values')->put($lang . '/static/' . $this->file, json_encode($data, JSON_PRETTY_PRINT));
+            Storage::save($lang, $file, $data);
         }
     }
 
@@ -125,7 +125,7 @@ class Page {
     {
         $timestamps = [];
         foreach(Admin::locales() as $locale) {
-            $timestamps[$locale] = Storage::disk('admin_values')->lastModified($locale . '/static/' . $this->file);
+            $timestamps[$locale] = Storage::lastModified($locale, $this->file);
         }
         sort($timestamps);
         return Carbon::createFromTimestamp($timestamps[count($timestamps) - 1]);
@@ -158,28 +158,13 @@ class Page {
 
     public function metaGroupValues($lang)
     {
-        $values = [
-            "kabas_title" => $this->title[$lang]
-        ];
+        $values = ["kabas_title" => $this->title[$lang]];
         foreach($this->meta[$lang] as $key => $value) {
             $values["meta"][$key] = $value;
         }
-
         return htmlentities(json_encode($values));
     }
 
-    protected function extractTabbedGroups()
-    {
-        $tabbed = new \stdClass;
-        foreach($this->fields as $key => $field) {
-            if(!isset($field->type)) continue;
-            if($field->type == 'group' && isset($field->structure->tabbed) && $field->structure->tabbed) {
-                $tabbed->$key = $field;
-                unset($this->fields->$key);
-            }
-        }
-        return $tabbed;
-    }
 
     public function getRoute()
     {
