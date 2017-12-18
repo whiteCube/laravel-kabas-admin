@@ -1,11 +1,10 @@
 .nav {
-    position: fixed;
+    float: left;
     top: 0;
     bottom: 0;
     left: 0;
-    width: s(300);
-    padding-top: s(100);
-    padding-left: s(25);
+    width: col(5, 26);
+    padding-top: s(40);
 
     &__title {
         @include hidden();
@@ -15,7 +14,7 @@
         text-transform: uppercase;
         font-weight: 700;
         letter-spacing: s(2, $s2);
-        padding: s(10, $s2) s(25, $s2);
+        padding: s(10, $s2) s(25, $s2) s(10, $s2) 0;
         margin-top: s(15, $s2);
         font-size: s($s2);
         display: inline-block;
@@ -25,7 +24,7 @@
         display: block;
         text-decoration: none;
         color: $cGray2;
-        padding: s(15) s(25);
+        padding: s(15) s(25) s(15) 0;
         transition: color 200ms $ease-out-quad;
         position: relative;
 
@@ -49,7 +48,7 @@
                 background: $cAccent;
                 border-radius: 50%;
                 position: absolute;
-                left: s(5);
+                left: s(-18);
                 top: s(18);
                 margin-right: s(10);
             }

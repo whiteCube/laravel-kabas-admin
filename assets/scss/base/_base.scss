@@ -1,9 +1,9 @@
 body {
     font-family: 'Open Sans', sans-serif;
     font-size: 15px;
-    margin: 60px auto 60px 300px;
+    margin: 0 auto 60px;
     color: $cAnthracite1;
-    background-color: rgb(241, 241, 241);
+    background-color: $cWhite2;
 }
 
 .container {
@@ -14,9 +14,12 @@ body {
 }
 
 .main {
-    padding: s(40);
+    padding: s(35) s(45);
+    width: col(21, 26);
     border-radius: 6px;
     background: $cWhite;
+    margin-top: s(-123);
+    float: left;
     margin-bottom: s(60);
 }
 

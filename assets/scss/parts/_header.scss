@@ -1,0 +1,36 @@
+.header {
+    position: relative;
+    background: $cAnthracite4;
+    height: s(210);
+
+    &:before {
+        content: '';
+        display: block;
+        @include cover();
+        background: url('../../img/waves.svg');
+        background-repeat: repeat-x;
+        background-position: bottom left;
+        background-size: 1622px;
+    }
+
+    &:after {
+        content: '';
+        display: block;
+        @include cover();
+        background-image: url('../../img/noise.png');
+        background-repeat: repeat;
+    }
+
+    &__bottom {
+        background-image: url('../../img/header-bottom.svg');
+        background-repeat: no-repeat;
+        background-size: 100%;
+        background-position: bottom center;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        top: 0;
+        margin: auto;
+    }
+}

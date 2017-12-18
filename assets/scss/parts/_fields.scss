@@ -1,0 +1,12 @@
+.field {
+    max-width: s(570);
+
+    &.submit {
+        padding: s(30) s(40);
+
+        .btn {
+            width: 53%;
+        }
+    }
+
+}

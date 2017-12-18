@@ -2,4 +2,79 @@
     &__shared {
         margin-bottom: s(50);
     }
+
+    &__side {
+        width: col(4, 21);
+        float: left;
+        height: 100%;
+    }
+
+    &__editables {
+        padding-top: s(53);
+        float: left;
+    }
+
+    &__editables,
+    &__submit {
+        width: col(17, 21);
+    }
+
+    &__submit {
+        float: left;
+        margin-left: col(4, 21);
+    }
+
+    &__editable {
+        &--hidden {
+            @include hidden();
+        }
+    }
+
+    .page__editable:not(.page__editable--general) {
+        & > .group {
+            &:first-child > .field__label {
+                // margin-bottom: s(25, $s2);
+                @include hidden();
+            }
+            .field__container {
+                padding: 0;
+                border: none;
+            }
+        }
+    }
+
+    &__sidetitle {
+        display: inline-block;
+        margin-bottom: s(30, $s2);
+        color: $cGray;
+        position: relative;
+        font-size: s($s2);
+
+        &:after {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: s(-10, $s2);
+            height: 1px;
+            background: $cWhite5;
+        }
+    }
+
+    &__grouplink {
+        display: block;
+        text-decoration: none;
+        color: $cAnthracite1;
+        font-size: s($s3);
+        line-height: s($s4, $s3);
+        padding: s(10, $s3) 0;
+
+        &--current {
+            font-weight: 700;
+        }
+    }
+
+    &__group {
+        padding-right: s(15);
+    }
 }

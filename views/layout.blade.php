@@ -7,7 +7,7 @@
     <link href="/vendor/kabas-admin/app.css" rel="stylesheet" type="text/css">
 
     {{-- custom styles --}}
-    {{-- <link href="/vendor/kabas-admin/admin.css" rel="stylesheet" type="text/css"> --}}
+    <link href="/vendor/kabas-admin/admin.css" rel="stylesheet" type="text/css">
 
     {{-- User styles --}}
     @foreach(Admin::stylesheets() as $stylesheet)
