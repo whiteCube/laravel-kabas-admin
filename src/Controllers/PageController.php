@@ -2,9 +2,10 @@
 
 namespace WhiteCube\Admin\Controllers;
 
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
 use WhiteCube\Admin\Facades\Admin as Admin;
-use Illuminate\Http\Request;
+use WhiteCube\Admin\RequestBag;
 
 class PageController extends BaseController {
 
@@ -17,24 +18,11 @@ class PageController extends BaseController {
 
     public function process(Request $request)
     {
-        $data = $this->getData($request);
-        $page = Admin::page($request->structure);
-        $page->setValues($data);
+        $requestbag = new RequestBag($request);
+        $page = Admin::page($requestbag->structure());
+        $page->setValues($requestbag->raw());
         $page->save();
         return redirect()->back();
-    }
-
-    protected function getData($request) 
-    {
-        $raw = $request->all();
-        unset($raw['_token']);
-        unset($raw['structure']);
-        $data = [];
-        foreach($raw as $key => $item) {
-            $parts = explode('|', $key);
-            $data[$parts[0]][$parts[1]] = $item;
-        }
-        return $data;
     }
 
 }
