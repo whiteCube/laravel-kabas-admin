@@ -26,7 +26,8 @@
                 "WhiteCube\\Admin\\AdminServiceProvider"
             ],
             "aliases": {
-                "Admin": "WhiteCube\\Admin\\Facades\\Admin"
+                "Admin": "WhiteCube\\Admin\\Facades\\Admin",
+                "Page": "WhiteCube\\Admin\\Facades\\Page"
             }
         }
     },
