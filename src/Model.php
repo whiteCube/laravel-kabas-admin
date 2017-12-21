@@ -5,8 +5,8 @@ namespace WhiteCube\Admin;
 use WhiteCube\Admin\Facades\Admin as Admin;
 use Carbon\Carbon;
 
-class Model {
-
+class Model
+{
     use Pageable;
 
     public $structure;
@@ -26,7 +26,6 @@ class Model {
         $this->config = $this->fields->kabas;
         $this->name = $this->fields->kabas->name;
         $this->items = $this->loadItems();
-        // dd($this);
     }
 
     protected function loadItems()
@@ -46,12 +45,14 @@ class Model {
 
     public function setValues($item)
     {
-        foreach($this->fields as $key => $field) {
-            if($key == 'kabas' || $key == 'translated') continue;
+        foreach ($this->fields as $key => $field) {
+            if ($key == 'kabas' || $key == 'translated') {
+                continue;
+            }
             $field->setValue($item->$key, 'shared');
         }
-        foreach(Admin::locales() as $locale) {
-            foreach($this->fields->translated as $key => $field) {
+        foreach (Admin::locales() as $locale) {
+            foreach ($this->fields->translated as $key => $field) {
                 $field->setValue($item->translate($locale)->$key, $locale);
             }
         }
@@ -66,7 +67,7 @@ class Model {
 
     public function save()
     {
-        foreach($this->values as $lang => $data) {
+        foreach ($this->values as $lang => $data) {
             Storage::values($lang, $file, $data);
         }
     }
@@ -74,7 +75,7 @@ class Model {
     public function lastModified()
     {
         $timestamps = [];
-        foreach(Admin::locales() as $locale) {
+        foreach (Admin::locales() as $locale) {
             $timestamps[$locale] = Storage::lastModified($locale, $file);
         }
         sort($timestamps);
@@ -86,4 +87,15 @@ class Model {
         return array_diff_key((array) $this->fields, ['kabas' => '', 'translated' => '']);
     }
 
+    public function hasSharedFields()
+    {
+        $count = 0;
+        foreach ($this->fields as $key => $field) {
+            if ($key == 'kabas' || $key == 'translated') {
+                continue;
+            }
+            $count++;
+        }
+        return $count;
+    }
 }

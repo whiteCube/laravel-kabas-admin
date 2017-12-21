@@ -4,8 +4,8 @@ namespace WhiteCube\Admin;
 
 use Illuminate\Http\Request;
 
-class RequestBag {
-
+class RequestBag
+{
     protected $data;
     protected $structure;
     protected $token;
@@ -19,13 +19,14 @@ class RequestBag {
         $this->structure = $this->data['structure'];
         $this->token = $this->data['_token'];
         $this->extract();
-        dd($this);
     }
 
     protected function extract()
     {
-        foreach($this->data as $key => $item) {
-            if($key == 'structure' || $key == '_token') continue;
+        foreach ($this->data as $key => $item) {
+            if ($key == 'structure' || $key == '_token') {
+                continue;
+            }
             $this->map($key, $item);
         }
     }
@@ -33,17 +34,31 @@ class RequestBag {
     protected function map($key, $item)
     {
         $descriptor = $this->getFieldDescriptors($key);
-        if($this->isTitle($descriptor->key)) return $this->setTitle($descriptor, $item);
-        if($this->isMeta($descriptor->key)) return $this->addMeta($descriptor, $item);
-        $this->items[$descriptor->lang][$descriptor->key] = $item;
+        if ($key == 'id') {
+            return;
+        }
+        if ($this->isTitle($descriptor->key)) {
+            return $this->setTitle($descriptor, $item);
+        }
+        if ($this->isMeta($descriptor->key)) {
+            return $this->addMeta($descriptor, $item);
+        }
+        if ($descriptor->lang) {
+            return $this->items[$descriptor->lang][$descriptor->key] = $item;
+        }
+
+        return $this->items[$descriptor->key] = $item;
     }
 
     protected function getFieldDescriptors($key)
     {
         $parts = explode('|', $key);
+        $lang = count($parts) == 1 ? false : $parts[0];
+        $key = count($parts) == 1 ? $parts[0] : $parts[1];
+        
         return (object) [
-            'lang' => $parts[0],
-            'key'  => $parts[1]
+            'lang' => $lang,
+            'key'  => $key
         ];
     }
 
@@ -71,5 +86,4 @@ class RequestBag {
     {
         return $this->$key;
     }
-
 }

@@ -6,6 +6,7 @@
             <h2 class="topbar__title">{{ $model->name }}</h2>
             <span class="topbar__counter">{{ $model->items()->count() }}</span>
         </div>
+        <btn primary icon="pages" href="#">New entry</btn>
     </div>
 
     <ktable>

@@ -11,13 +11,17 @@
     <form class="page__form" method="POST" action="{{ route('kabas.admin.model.submit') }}">
         {{ csrf_field() }}
         <input name="structure" type="hidden" value="{{ $model->structure }}">
+        <input name="id" type="hidden" value="{{ $item->id }}">
         <div class="tabs">
             <div class="tabs__header">
+                @if($model->hasSharedFields())
                 <a href="#" class="tabs__link tabs__link--active" data-target="shared">Shared</a>
+                @endif
                 @foreach(Admin::locales() as $i => $lang)
                     <a href="#" class="tabs__link" data-target="{{ $lang }}">{{ $lang }}</a>
                 @endforeach
             </div>
+            @if($model->hasSharedFields())
             <div class="tabs__item tabs__item--active" id="shared">
                 <div class="page__side">
                     <h3 class="page__sidetitle">Zones modifiables</h3>
@@ -32,7 +36,7 @@
                     @endforeach
                     </ul>
                 </div>
-
+                
                 <div class="page__editables">
                     <div class="page__editable page__editable--general" id="shared-kabas-general">
                         @foreach ($model->fields as $key => $field)
@@ -48,8 +52,9 @@
                     @endforeach
                 </div>
             </div>
+            @endif
             @foreach (Admin::locales() as $i => $lang)
-                <div class="tabs__item" id="{{ $lang }}">
+                <div class="tabs__item{{ !$model->hasSharedFields() && $i == 0 ? ' tabs__item--active' : '' }}" id="{{ $lang }}">
 
                 <div class="page__side">
                     <h3 class="page__sidetitle">Zones modifiables</h3>
