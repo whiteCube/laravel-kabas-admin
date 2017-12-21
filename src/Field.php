@@ -2,8 +2,8 @@
 
 namespace WhiteCube\Admin;
 
-class Field {
-
+class Field
+{
     protected $values = [];
     public $type;
     public $label;
@@ -26,12 +26,14 @@ class Field {
 
     protected function prefixSubfields($options, $lang, $name)
     {
-        if(!isset($options)) return;
-        if(isset($options->options)) {
+        if (!isset($options)) {
+            return;
+        }
+        if (isset($options->options)) {
             return $this->prefixSubfields($options->options, $lang, $name);
         }
-        foreach($options as $key => $field) {
-            if(isset($field->options)) {
+        foreach ($options as $key => $field) {
+            if (isset($field->options)) {
                 $this->prefixSubfields($field->options, $lang, $name . '[' . $key . ']');
             }
             $field->name = $lang . '|' . $name . '>' . $key;
@@ -40,21 +42,23 @@ class Field {
 
     public function render($lang)
     {
-        if(isset($this->structure->controllers->show)) {
+        if (isset($this->structure->controllers->show)) {
             return $this->callUserShowMethod($lang);
         }
-        if(isset($this->structure->options)) {
+        if (isset($this->structure->options)) {
             $this->prefixSubfields($this->structure->options, $lang, $this->key);
         }
 
-        $value = $this->values[$lang];
+        $value = $this->values[$lang] ?? '';
 
-        if($this->type == 'date') {
-            $value = (string) $this->values[$lang];
+        if ($this->type == 'date') {
+            $value = (string) ($this->values[$lang] ?? '');
         }
 
         $name = $lang . '|' . $this->key;
-        if($lang == 'shared') $name = $this->key;
+        if ($lang == 'shared') {
+            $name = $this->key;
+        }
 
         return '<genericfield 
                     name="' . $name . '" 
@@ -71,7 +75,9 @@ class Field {
 
     public function setValue($value, $locale = false)
     {
-        if(!$locale) return $this->values = $value;
+        if (!$locale) {
+            return $this->values = $value;
+        }
         $this->values[$locale] = $value;
     }
 
@@ -84,5 +90,4 @@ class Field {
     {
         return $this->type == 'group' && ($this->structure->tabbed ?? false);
     }
-
 }

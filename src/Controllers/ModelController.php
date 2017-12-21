@@ -51,7 +51,43 @@ class ModelController extends BaseController
     protected function addTranslatedValues($item, $locale, $values)
     {
         foreach ($values as $key => $value) {
-            $item->translate($locale)->$key = $value;
+            $item->translateOrNew($locale)->$key = $value;
         }
+    }
+
+    public function add($file)
+    {
+        $model = Admin::model($file);
+        return view('admin::add-model')->with([
+            'model' => $model
+        ]);
+    }
+
+    public function create($file, Request $request)
+    {
+        $requestbag = new RequestBag($request);
+        $structure = str_replace('models/', '', $requestbag->structure());
+        $model = Admin::model($structure);
+        $item = new $model->config->model;
+        foreach ($requestbag->items() as $key => $value) {
+            if (isset($model->fields->$key) && $model->fields->$key->type == 'date') {
+                $value = Carbon::createFromFormat('d F Y', $value);
+            }
+            if (in_array($key, Admin::locales())) {
+                $this->addTranslatedValues($item, $key, $value);
+            } else {
+                $item->$key = $value;
+            }
+        }
+        $item->save();
+        return  redirect()->route('kabas.admin.model.item', ['file' => $structure, 'id' => $item->id]);
+    }
+
+    public function destroy($file, $id)
+    {
+        $model = Admin::model($file);
+        $item = call_user_func($model->config->model . '::find', $id);
+        $item->delete();
+        return redirect()->route('kabas.admin.model', ['file' => $model->file]);
     }
 }
