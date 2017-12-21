@@ -3,10 +3,11 @@
 namespace WhiteCube\Admin;
 
 use WhiteCube\Admin\Facades\Admin as Admin;
-use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 
 class Model {
+
+    use Pageable;
 
     public $structure;
     public $file;
@@ -20,10 +21,12 @@ class Model {
         $this->structure = $structure;
         $this->file = str_replace('models/', '', $structure);
         $this->url = str_replace('.json', '', $structure);
-        $this->fields = json_decode(Storage::disk('admin_structures')->get($this->structure));
+        $this->fields = $this->loadFields();
+        $this->groups = $this->extractTabbedGroups();
         $this->config = $this->fields->kabas;
         $this->name = $this->fields->kabas->name;
         $this->items = $this->loadItems();
+        // dd($this);
     }
 
     protected function loadItems()
@@ -41,17 +44,30 @@ class Model {
         return $this->values[$lang]->$key ?? 'not found';
     }
 
-    public function setValues($values)
+    public function setValues($item)
     {
-        foreach($this->values as $lang => $data) {
-            $this->values[$lang] = (object) array_merge((array) $data, $values[$lang]);
+        foreach($this->fields as $key => $field) {
+            if($key == 'kabas' || $key == 'translated') continue;
+            $field->setValue($item->$key, 'shared');
+        }
+        foreach(Admin::locales() as $locale) {
+            foreach($this->fields->translated as $key => $field) {
+                $field->setValue($item->translate($locale)->$key, $locale);
+            }
         }
     }
+
+    // public function setValues($values)
+    // {
+    //     foreach($this->values as $lang => $data) {
+    //         $this->values[$lang] = (object) array_merge((array) $data, $values[$lang]);
+    //     }
+    // }
 
     public function save()
     {
         foreach($this->values as $lang => $data) {
-            Storage::disk('admin_values')->put($lang . '/static/' . $this->file, json_encode($data));
+            Storage::values($lang, $file, $data);
         }
     }
 
@@ -59,7 +75,7 @@ class Model {
     {
         $timestamps = [];
         foreach(Admin::locales() as $locale) {
-            $timestamps[$locale] = Storage::disk('admin_values')->lastModified($locale . '/static/' . $this->file);
+            $timestamps[$locale] = Storage::lastModified($locale, $file);
         }
         sort($timestamps);
         return Carbon::createFromTimestamp($timestamps[count($timestamps) - 1]);

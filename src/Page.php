@@ -7,6 +7,8 @@ use Carbon\Carbon;
 
 class Page {
 
+    use Pageable;
+
     public $structure;
     public $file;
     protected $values;
@@ -29,27 +31,6 @@ class Page {
         $this->name = $this->fields->kabas->name;
         unset($this->fields->kabas);
         $this->loadValues();
-    }
-
-    protected function loadFields()
-    {
-        $fields = Storage::structure($this->structure);
-        foreach($fields as $key => $field) {
-            if($key == 'kabas') continue;
-            $fields->$key = new Field($key, $field);
-        }
-        return $fields;
-    }
-
-    protected function extractTabbedGroups()
-    {
-        $tabbed = new \stdClass;
-        foreach($this->fields as $key => $field) {
-            if($key == 'kabas' || !$field->isTabbedGroup()) continue;
-            $tabbed->$key = $field;
-            unset($this->fields->$key);
-        }
-        return $tabbed;
     }
 
     protected function loadValues()
