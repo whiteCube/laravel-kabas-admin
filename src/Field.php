@@ -45,7 +45,7 @@ class Field
         if (isset($this->structure->controllers->show)) {
             return $this->callUserShowMethod($lang);
         }
-        if (isset($this->structure->options)) {
+        if ($this->isRepeatable() && isset($this->structure->options)) {
             $this->prefixSubfields($this->structure->options, $lang, $this->key);
         }
 
