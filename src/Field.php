@@ -47,10 +47,19 @@ class Field {
             $this->prefixSubfields($this->structure->options, $lang, $this->key);
         }
 
+        $value = $this->values[$lang];
+
+        if($this->type == 'date') {
+            $value = (string) $this->values[$lang];
+        }
+
+        $name = $lang . '|' . $this->key;
+        if($lang == 'shared') $name = $this->key;
+
         return '<genericfield 
-                    name="' . $lang . '|' . $this->key . '" 
+                    name="' . $name . '" 
                     :structure="' . htmlspecialchars(json_encode($this->structure, ENT_QUOTES)) . '" 
-                    :value="' . htmlspecialchars(json_encode($this->values[$lang] ?? '')) . '" ></genericfield>';
+                    :value="' . htmlspecialchars(json_encode($value ?? '')) . '" ></genericfield>';
     }
 
     protected function callUserShowMethod($lang)
@@ -60,8 +69,9 @@ class Field {
         return call_user_func([$controller, $parts[1]], $this, $lang);
     }
 
-    public function setValue($value, $locale)
+    public function setValue($value, $locale = false)
     {
+        if(!$locale) return $this->values = $value;
         $this->values[$locale] = $value;
     }
 
