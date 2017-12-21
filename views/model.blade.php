@@ -17,9 +17,11 @@
                 @if($model->hasSharedFields())
                 <a href="#" class="tabs__link tabs__link--active" data-target="shared">Shared</a>
                 @endif
+                @if(isset($model->fields->translated))
                 @foreach(Admin::locales() as $i => $lang)
                     <a href="#" class="tabs__link" data-target="{{ $lang }}">{{ $lang }}</a>
                 @endforeach
+                @endif
             </div>
             @if($model->hasSharedFields())
             <div class="tabs__item tabs__item--active" id="shared">
@@ -69,7 +71,7 @@
                     @endforeach
                     </ul>
                 </div>
-
+                @if(isset($model->fields->translated))
                 <div class="page__editables">
                     <div class="page__editable page__editable--general" id="{{$lang}}-kabas-general">
                         {{-- @foreach ($model->fields as $key => $field)
@@ -85,6 +87,7 @@
                     </div>
                     @endforeach
                 </div>
+                @endif
                 </div>
             @endforeach
         </div>

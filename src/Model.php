@@ -52,6 +52,9 @@ class Model
             $field->setValue($item->$key, 'shared');
         }
         foreach (Admin::locales() as $locale) {
+            if (!isset($this->fields->translated)) {
+                return;
+            }
             foreach ($this->fields->translated as $key => $field) {
                 $field->setValue($item->translate($locale)->$key, $locale);
             }
