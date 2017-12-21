@@ -17,10 +17,12 @@ class ModelController extends BaseController {
 
     public function show($file, $id)
     {
-        $model = call_user_func(Admin::model($file)->config->model . '::find', $id);
+        $item = call_user_func(Admin::model($file)->config->model . '::find', $id);
+        $model = Admin::model($file);
+        $model->setValues($item);
         return view('admin::model')->with([
-            'model' => Admin::model($file),
-            'item' => $model
+            'model' => $model,
+            'item' => $item
         ]);
     }
 
