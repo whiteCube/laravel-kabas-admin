@@ -6,8 +6,8 @@ use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 
-class Page {
-
+class Page
+{
     protected $route;
     protected $json;
     protected $meta;
@@ -54,7 +54,9 @@ class Page {
      */
     public function title(string $prefix = null, string $suffix = null) : string
     {
-        if(!isset($this->json->title)) return false;
+        if (!isset($this->json->title)) {
+            return false;
+        }
         return $prefix . $this->json->title . $suffix;
     }
 
@@ -64,7 +66,7 @@ class Page {
      */
     public function setTitle(string $title)
     {
-        $this->json->title = $title;
+        $this->json->kabas_title = $title;
     }
 
     /**
@@ -79,13 +81,13 @@ class Page {
     /**
      * Get a value from this page's json data
      * @param  string $key
-     * @return mixed    
+     * @return mixed
      */
     public function content(string $key)
     {
         $path = explode('.', $key);
         $result = $this->json;
-        foreach($path as $pathPart) {
+        foreach ($path as $pathPart) {
             $result = $result->$pathPart;
         }
         return $result;
@@ -99,5 +101,4 @@ class Page {
     {
         return (object) ['title' => '', 'json' => (object) []];
     }
-
 }
