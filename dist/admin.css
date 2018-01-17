@@ -344,7 +344,7 @@ a {
   outline: none;
 }
 
-.nav {
+.kabasnav {
   float: left;
   top: 0;
   bottom: 0;
@@ -353,13 +353,13 @@ a {
   padding-top: 2.66666667em;
 }
 
-.nav__title {
+.kabasnav__title {
   position: absolute;
   top: -99999px;
   left: -99999px;
 }
 
-.nav__subtitle {
+.kabasnav__subtitle {
   text-transform: uppercase;
   font-weight: 700;
   letter-spacing: 0.15037594em;
@@ -369,7 +369,7 @@ a {
   display: inline-block;
 }
 
-.nav__link {
+.kabasnav__link {
   display: block;
   text-decoration: none;
   color: #7B8181;
@@ -379,21 +379,21 @@ a {
   position: relative;
 }
 
-.nav__link--primary {
+.kabasnav__link--primary {
   color: #485151;
 }
 
-.nav__link:hover,
-.nav__link:focus {
+.kabasnav__link:hover,
+.kabasnav__link:focus {
   color: #C25040;
 }
 
-.nav__link--active {
+.kabasnav__link--active {
   font-weight: 600;
   color: #485151;
 }
 
-.nav__link--active:before {
+.kabasnav__link--active:before {
   content: '';
   display: inline-block;
   width: 0.53333333em;
