@@ -7,8 +7,8 @@ use Illuminate\Routing\Controller as BaseController;
 use WhiteCube\Admin\Facades\Admin as Admin;
 use WhiteCube\Admin\RequestBag;
 
-class PageController extends BaseController {
-
+class PageController extends BaseController
+{
     public function show($file)
     {
         return view('admin::page')->with([
@@ -20,9 +20,8 @@ class PageController extends BaseController {
     {
         $requestbag = new RequestBag($request);
         $page = Admin::page($requestbag->structure());
-        $page->setValues($requestbag->raw());
+        $page->setValues($requestbag->data());
         $page->save();
         return redirect()->back();
     }
-
 }

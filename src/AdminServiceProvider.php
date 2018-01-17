@@ -5,8 +5,8 @@ namespace WhiteCube\Admin;
 use Illuminate\Support\ServiceProvider;
 use WhiteCube\Admin\Accessors\Page;
 
-class AdminServiceProvider extends ServiceProvider {
-    
+class AdminServiceProvider extends ServiceProvider
+{
     public function boot()
     {
         $this->publishes($this->config(), 'config');
@@ -27,7 +27,7 @@ class AdminServiceProvider extends ServiceProvider {
 
     public function register()
     {
-        $this->app->singleton('admin', function($app) {
+        $this->app->singleton('admin', function ($app) {
             $config = $app->make('config');
             return new AdminService($config, new FileWorker);
         });
@@ -38,5 +38,4 @@ class AdminServiceProvider extends ServiceProvider {
     {
         return ['admin'];
     }
-
 }

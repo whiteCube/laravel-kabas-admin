@@ -17,18 +17,17 @@ class Field
         $this->type = $this->structure->type;
     }
 
-    public function isRepeatable()
+    public function isNestable()
     {
         return ($this->structure->type == 'repeater' ||
                 $this->structure->type == 'flexible' ||
+                $this->structure->type == 'group' ||
                 $this->structure->type == 'gallery');
     }
 
     protected function prefixSubfields($options, $lang, $name)
     {
-        if (!isset($options)) {
-            return;
-        }
+        if (!isset($options)) return;
         if (isset($options->options)) {
             return $this->prefixSubfields($options->options, $lang, $name);
         }
@@ -45,7 +44,7 @@ class Field
         if (isset($this->structure->controllers->show)) {
             return $this->callUserShowMethod($lang);
         }
-        if ($this->isRepeatable() && isset($this->structure->options)) {
+        if ($this->isNestable() && isset($this->structure->options)) {
             $this->prefixSubfields($this->structure->options, $lang, $this->key);
         }
 
@@ -56,9 +55,7 @@ class Field
         }
 
         $name = $lang . '|' . $this->key;
-        if ($lang == 'shared') {
-            $name = $this->key;
-        }
+        if ($lang == 'shared') $name = $this->key;
 
         return '<genericfield 
                     name="' . $name . '" 
@@ -75,9 +72,7 @@ class Field
 
     public function setValue($value, $locale = false)
     {
-        if (!$locale) {
-            return $this->values = $value;
-        }
+        if (!$locale) return $this->values = $value;
         $this->values[$locale] = $value;
     }
 

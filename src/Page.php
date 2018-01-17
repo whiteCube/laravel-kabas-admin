@@ -5,8 +5,8 @@ namespace WhiteCube\Admin;
 use WhiteCube\Admin\Facades\Admin as Admin;
 use Carbon\Carbon;
 
-class Page {
-
+class Page
+{
     use Pageable;
 
     public $structure;
@@ -35,7 +35,7 @@ class Page {
 
     protected function loadValues()
     {
-        foreach(Admin::locales() as $locale) {
+        foreach (Admin::locales() as $locale) {
             $values = Storage::values($locale, $this->file);
             $this->insertIntoFields((object) $values, $locale);
         }
@@ -43,26 +43,34 @@ class Page {
 
     protected function setMetadata($values, $locale)
     {
-        $this->title[$locale] = $values->kabas_title;
-        $this->meta[$locale] = $values->meta;
+        $this->title[$locale] = $values->kabas_title ?? '';
+        $this->meta[$locale] = $values->meta ?? [];
     }
 
     protected function insertIntoFields($values, $locale)
     {
-        if(!isset($values->meta)) $values->meta = $this->extractMetaValues($values);
+        if (!isset($values->meta)) {
+            $values->meta = $this->extractMetaValues($values);
+        }
         $this->setMetadata($values, $locale);
-        foreach($values as $key => $value) {
-            if($key === 'kabas_title' || $key === 'meta') continue;
-            if(isset($this->fields->$key)) $this->fields->$key->setValue($value, $locale);
-            if(isset($this->groups->$key)) $this->groups->$key->setValue($value, $locale);
+        foreach ($values as $key => $value) {
+            if ($key === 'kabas_title' || $key === 'meta') {
+                continue;
+            }
+            if (isset($this->fields->$key)) {
+                $this->fields->$key->setValue($value, $locale);
+            }
+            if (isset($this->groups->$key)) {
+                $this->groups->$key->setValue($value, $locale);
+            }
         }
     }
 
     protected function extractMetaValues($values)
     {
         $meta = [];
-        foreach($values as $key => $value) {
-            if(strpos($key, 'meta#') !== false) {
+        foreach ($values as $key => $value) {
+            if (strpos($key, 'meta#') !== false) {
                 $meta[str_replace('meta#', '', $key)] = $value;
             }
         }
@@ -76,26 +84,26 @@ class Page {
 
     public function setValues($values)
     {
-        foreach($values as $lang => $data) {
+        foreach ($values as $lang => $data) {
             $this->insertIntoFields((object) $data, $lang);
         }
     }
 
     public function save()
     {
-        foreach($this->getValues() as $lang => $data) {
-            Storage::save($lang, $file, $data);
+        foreach ($this->getValues() as $lang => $data) {
+            Storage::save($lang, $this->file, $data);
         }
     }
 
     protected function getValues()
     {
         $values = new \stdClass;
-        foreach(Admin::locales() as $locale) {
+        foreach (Admin::locales() as $locale) {
             $values->$locale = new \stdClass;
             $values->$locale->kabas_title = $this->title[$locale];
             $values->$locale->meta = $this->meta[$locale];
-            foreach(array_merge((array) $this->fields, (array) $this->groups) as $key => $field) {
+            foreach (array_merge((array) $this->fields, (array) $this->groups) as $key => $field) {
                 $values->$locale->$key = $field->value($locale);
             }
         }
@@ -105,7 +113,7 @@ class Page {
     public function lastModified()
     {
         $timestamps = [];
-        foreach(Admin::locales() as $locale) {
+        foreach (Admin::locales() as $locale) {
             $timestamps[$locale] = Storage::lastModified($locale, $this->file);
         }
         sort($timestamps);
@@ -116,12 +124,12 @@ class Page {
     {
         $structure = json_decode(file_get_contents(__DIR__ . '/' . $this->defaultFields));
         $structure = $this->makeTranslated($structure, $lang);
-        if(!isset($this->config->meta)) {
+        if (!isset($this->config->meta)) {
             unset($structure->meta);
             return htmlentities(json_encode($structure));
         }
         $meta = $this->makeTranslated($this->config->meta, $lang, 'meta');
-        foreach($meta as $key => $field) {
+        foreach ($meta as $key => $field) {
             $structure->meta->options->$key = $field;
         }
         return htmlentities(json_encode($structure));
@@ -129,9 +137,11 @@ class Page {
 
     protected function makeTranslated($structure, $lang, $prefix = false)
     {
-        foreach($structure as $key => $field) {
+        foreach ($structure as $key => $field) {
             $append = "$lang|";
-            if($prefix) $append .= "$prefix#";
+            if ($prefix) {
+                $append .= "$prefix#";
+            }
             $structure->$key->name = $append . $key;
         }
         return $structure;
@@ -140,7 +150,7 @@ class Page {
     public function metaGroupValues($lang)
     {
         $values = ["kabas_title" => $this->title[$lang]];
-        foreach($this->meta[$lang] as $key => $value) {
+        foreach ($this->meta[$lang] as $key => $value) {
             $values["meta"][$key] = $value;
         }
         return htmlentities(json_encode($values));
@@ -155,5 +165,4 @@ class Page {
             return '';
         }
     }
-
 }

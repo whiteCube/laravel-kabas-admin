@@ -34,6 +34,9 @@ class Page
      */
     protected function getFile() : string
     {
+        if (!Storage::disk('admin_values')->exists(Lang::locale() . '/static/' . $this->route . '.json')) {
+            return false;
+        }
         return Storage::disk('admin_values')->get(Lang::locale() . '/static/' . $this->route . '.json');
     }
 
@@ -54,10 +57,10 @@ class Page
      */
     public function title(string $prefix = null, string $suffix = null) : string
     {
-        if (!isset($this->json->title)) {
+        if (!isset($this->json->kabas_title)) {
             return false;
         }
-        return $prefix . $this->json->title . $suffix;
+        return $prefix . $this->json->kabas_title . $suffix;
     }
 
     /**
@@ -99,6 +102,6 @@ class Page
      */
     protected function getEmptyJson()
     {
-        return (object) ['title' => '', 'json' => (object) []];
+        return (object) ['kabas_title' => '', 'metas' => (object) []];
     }
 }
