@@ -16,8 +16,8 @@ trait ContainsFields {
     {
         $fields = [];
 
-        foreach ($structure as $key => $structure) {
-            $fields[$key] = new Field($key, $structure);
+        foreach ($structure as $key => $struct) {
+            $fields[$key] = new Field($key, $struct);
         }
 
         return $fields;
