@@ -4,15 +4,15 @@
 <section class="page">
     <div class="topbar">
         <div class="topbar__text">
-            <h2 class="topbar__title">{{ $page->name }}</h2>
+            <h2 class="topbar__title">{{ $page->config()->name() }}</h2>
         </div>
-        @if($page->getRoute())
-        <a class="topbar__link link" target="_blank" href="{{ $page->getRoute() }}">{{ $page->getRoute() }}</a>
+        @if($page->route())
+        <a class="topbar__link link" target="_blank" href="{{ $page->route() }}">Voir la page</a>
         @endif
     </div>
     <form class="page__form" method="POST" action="{{ route('kabas.admin.page.submit') }}">
         {{ csrf_field() }}
-        <input name="structure" type="hidden" value="{{ $page->structure }}">
+        <input name="structure" type="hidden" value="{{ $page->structure()->file() }}">
         <div class="tabs">
             <div class="tabs__header">
                 @foreach(Admin::locales() as $i =>$lang)
@@ -27,21 +27,21 @@
                         <li class="page__group">
                             <a class="page__grouplink page__grouplink--general page__grouplink--current" href="#{{$lang}}-kabas-general">General</a>
                         </li>
-                    @foreach($page->groups as $key => $group)
+                        @foreach($page->fields()->tabbedGroups() as $key => $group)
                         <li class="page__group">
                             <a class="page__grouplink" href="#{{$lang}}-{{ $key }}">{{ $group->label }}</a>
                         </li>
-                    @endforeach
+                        @endforeach
                     </ul>
                 </div>
                 <div class="page__editables">
                     <div class="page__editable page__editable--general" id="{{$lang}}-kabas-general">
-                        <groupfield label="Page" :options="{!! $page->metaGroupStructure($lang) !!}" :values="{!! $page->metaGroupValues($lang) !!}"></groupfield>
-                        @foreach ($page->fields as $key => $field)
+                        <groupfield label="Page" :options="{!! htmlentities(json_encode($page->structure()->meta())) !!}" :values="{!! htmlentities(json_encode([])) !!}"></groupfield>
+                        @foreach ($page->fields() as $key => $field)
                             {!! $field->render($lang) !!}
                         @endforeach
                     </div>
-                    @foreach($page->groups as $key => $group)
+                    @foreach($page->fields()->tabbedGroups() as $key => $group)
                     <div class="page__editable page__editable--hidden" id="{{$lang}}-{{ $key }}">
                         {!! $group->render($lang) !!}
                     </div>

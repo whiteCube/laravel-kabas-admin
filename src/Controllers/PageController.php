@@ -9,10 +9,10 @@ use WhiteCube\Admin\RequestBag;
 
 class PageController extends BaseController
 {
-    public function show($file)
+    public function show($route)
     {
         return view('admin::page')->with([
-            'page' => Admin::page($file . '.json')
+            'page' => Admin::page($route)
         ]);
     }
 
@@ -20,7 +20,7 @@ class PageController extends BaseController
     {
         $requestbag = new RequestBag($request);
         $page = Admin::page($requestbag->structure());
-        $page->setValues($requestbag->data());
+        $page->setValues($requestbag->items());
         $page->save();
         return redirect()->back();
     }

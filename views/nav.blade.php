@@ -3,8 +3,8 @@
     <a class="kabasnav__link kabasnav__link--primary {{ url()->current() == route('kabas.admin') ? 'kabasnav__link--active' : '' }}" href="{{ route('kabas.admin') }}">Administration</a>
     <em class="kabasnav__subtitle">Pages</em>
     @foreach (Admin::pages() as $page)
-        <a class="kabasnav__link {{ url()->current() == route('kabas.admin.page', ['file' => $page->url]) ? 'kabasnav__link--active' : '' }}" href="{{ route('kabas.admin.page', ['file' => $page->url]) }}">
-            {{ $page->name }}
+        <a class="kabasnav__link {{ url()->current() == route('kabas.admin.page', ['file' => $page->route()]) ? 'kabasnav__link--active' : '' }}" href="{{ route('kabas.admin.page', ['file' => $page->route()]) }}">
+            {{ $page->config()->name() }}
         </a>
     @endforeach
     <em class="kabasnav__subtitle">Modèles</em>

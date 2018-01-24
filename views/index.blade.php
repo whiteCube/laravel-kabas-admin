@@ -10,12 +10,12 @@
     
     <section>
     @foreach($pages as $page)
-        <card edit="{{ route('kabas.admin.page', ['file' => $page->url]) }}" view="{{ $page->getRoute() }}" icon="{{ $page->config->icon ?? 'liste' }}">
-            <template slot="title">{{ $page->name }}</template>
+        <card edit="{{ route('kabas.admin.page', ['file' => $page->structure()->file()]) }}" view="{{ $page->route() }}" icon="{{ $page->config()->icon() }}">
+            <template slot="title">{{ $page->config()->name() }}</template>
             <template slot="edit">Edit this page</template>
             <template slot="editedlabel">Last modified</template>
             <template slot="edited">{{ $page->lastModified()->format('d-m-Y H:i') }}</template>
-            <template slot="description">{{ str_limit($page->meta[Lang::locale()]->description, 155) }}</template>
+            <template slot="description">{{ str_limit($page->meta()->get('description')->value(Lang::locale()), 155) }}</template>
             <template slot="view">View this page</template>
         </card>
     @endforeach 

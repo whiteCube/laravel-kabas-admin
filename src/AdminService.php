@@ -48,16 +48,16 @@ class AdminService {
             $pages[$file] = new Page($file);
         }
         usort($pages, function($a, $b) {
-            return strcmp($a->name, $b->name);
+            return strcmp($a->config()->name(), $b->config()->name());
         });
         $this->pages = $pages;
         return $pages;
     }
 
-    public function page($filename)
+    public function page($route)
     {
         foreach($this->pages() as $page) {
-            if($page->file == $filename) return $page;
+            if($page->route() == $route) return $page;
         }
         return null;
     }
