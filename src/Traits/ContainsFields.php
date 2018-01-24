@@ -47,15 +47,6 @@ trait ContainsFields {
     }
 
     /**
-     * Make class iterable
-     * @return ArrayIterator
-     */
-    public function getIterator()
-    {
-        return new ArrayIterator($this->items);
-    }
-
-    /**
      * Set all fields of the specified locale 
      * to the specified values
      * @param array $values
@@ -64,9 +55,18 @@ trait ContainsFields {
      */
     public function setAll($values, $locale)
     {
-        foreach($this->items as $key => $item) {
+        foreach ($this->items as $key => $item) {
             $this->set($key, $values->$key ?? null, $locale);
         }
+    }
+
+    /**
+     * Make class iterable
+     * @return ArrayIterator
+     */
+    public function getIterator()
+    {
+        return new ArrayIterator($this->items);
     }
 
 }
