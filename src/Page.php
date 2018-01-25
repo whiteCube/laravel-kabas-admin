@@ -89,4 +89,21 @@ class Page {
             $this->meta->setAll($values->meta, $locale);
         }
     }
+
+    /**
+     * Write the current data to disk
+     * @return void
+     */
+    public function save()
+    {
+        foreach (Admin::locales() as $locale) {
+            $data = [];
+            $meta = $this->meta->compress($locale);
+            $fields = $this->fields->compress($locale);
+            $data['meta'] = $meta;
+            $data = array_merge($data, $fields);
+            Storage::update($locale, $this->structure->file(), $data);
+        }
+        die();
+    }
 }

@@ -15,11 +15,9 @@ trait ContainsFields {
     protected function createFields($structure)
     {
         $fields = [];
-
         foreach ($structure as $key => $struct) {
             $fields[$key] = new Field($key, $struct);
         }
-
         return $fields;
     }
 
@@ -55,9 +53,36 @@ trait ContainsFields {
      */
     public function setAll($values, $locale)
     {
+        if(is_array($values)) $values = (object) $values;
         foreach ($this->items as $key => $item) {
             $this->set($key, $values->$key ?? null, $locale);
         }
+    }
+
+    /**
+     * Merge request data to field values
+     * @param array $data
+     * @return void
+     */
+    public function merge($data)
+    {
+        foreach($data as $locale => $values) {
+            $this->setAll($values, $locale);
+        }
+    }
+
+    /**
+     * Generate assoc array containing all values
+     * @param locale $locale
+     * @return array
+     */
+    public function compress($locale)
+    {
+        $data = [];
+        foreach($this->items as $key => $field) {
+            $data[$key] = $field->value($locale);
+        } 
+        return $data;
     }
 
     /**
