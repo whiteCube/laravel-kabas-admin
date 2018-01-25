@@ -35,4 +35,15 @@ class FieldsContainer implements IteratorAggregate {
         });
     }
 
+    /**
+     * Get general fields
+     * @return array
+     */
+    public function general()
+    {
+        return array_filter($this->items, function ($item) {
+            return (!isset($item->structure->tabbed) || !$item->structure->tabbed);
+        });
+    }
+
 }
