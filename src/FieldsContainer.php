@@ -28,7 +28,7 @@ class FieldsContainer implements IteratorAggregate {
      * Get all tabbed groups
      * @return array
      */
-    public function tabbedGroups()
+    public function tabbed()
     {
         return array_filter($this->items, function($item) {
             return $item->type == 'group' && ($item->structure->tabbed ?? false);

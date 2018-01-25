@@ -27,7 +27,7 @@
                         <li class="page__group">
                             <a class="page__grouplink page__grouplink--general page__grouplink--current" href="#{{$lang}}-kabas-general">General</a>
                         </li>
-                        @foreach($page->fields()->tabbedGroups() as $key => $group)
+                        @foreach($page->fields()->tabbed() as $key => $group)
                         <li class="page__group">
                             <a class="page__grouplink" href="#{{$lang}}-{{ $key }}">{{ $group->label }}</a>
                         </li>
@@ -42,7 +42,7 @@
                             {!! $field->render($lang) !!}
                         @endforeach
                     </div>
-                    @foreach($page->fields()->tabbedGroups() as $key => $group)
+                    @foreach($page->fields()->tabbed() as $key => $group)
                     <div class="page__editable page__editable--hidden" id="{{$lang}}-{{ $key }}">
                         {!! $group->render($lang) !!}
                     </div>
