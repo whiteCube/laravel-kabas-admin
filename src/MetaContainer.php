@@ -24,4 +24,18 @@ class MetaContainer implements IteratorAggregate {
         $this->items = $this->createFields($structure);
     }
 
+    /**
+     * Get prefixed values to insert into the view
+     * @param string $locale
+     * @return void
+     */
+    public function prefixedValues($locale)
+    {
+        $prefixed = new \stdClass;
+        foreach ($this->items as $key => $field) {
+            $prefixed->{$locale . '|meta#' . $key} = $field->value($locale);
+        }
+        return htmlentities(json_encode($prefixed));
+    }
+
 }

@@ -36,7 +36,7 @@
                 </div>
                 <div class="page__editables">
                     <div class="page__editable page__editable--general" id="{{$lang}}-kabas-general">
-                        <groupfield label="Page" :options="{!! $page->structure()->prefixedMeta($lang) !!}" :values="{!! htmlentities(json_encode([])) !!}"></groupfield>
+                        <groupfield label="Page" :options="{!! $page->structure()->prefixedMeta($lang) !!}" :values="{!! $page->meta()->prefixedValues($lang) !!}"></groupfield>
                         @foreach ($page->fields()->general() as $key => $field)
                             {!! $field->render($lang) !!}
                         @endforeach
