@@ -2,7 +2,7 @@
 
 Route::group(['middleware' => ['web', Admin::middleware()], 'prefix' => 'admin'], function () {
     Route::get('/', 'WhiteCube\Admin\Controllers\AdminController@index')->name('kabas.admin');
-    Route::get('pages/{file}', 'WhiteCube\Admin\Controllers\PageController@show')->name('kabas.admin.page');
+    Route::get('pages/{route}', 'WhiteCube\Admin\Controllers\PageController@show')->name('kabas.admin.page');
     Route::post('pages', 'WhiteCube\Admin\Controllers\PageController@process')->name('kabas.admin.page.submit');
     Route::get('models/{file}', 'WhiteCube\Admin\Controllers\ModelController@list')->name('kabas.admin.model');
     Route::get('models/{file}/add', 'WhiteCube\Admin\Controllers\ModelController@add')->name('kabas.admin.model.add');
