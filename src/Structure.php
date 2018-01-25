@@ -67,4 +67,17 @@ class Structure {
         return $this->content->kabas;
     }
 
+    /**
+     * Get the prefixed meta structure as a string
+     * @return string
+     */
+    public function prefixedMeta($lang)
+    {
+        $prefixed = new \stdClass;
+        foreach ($this->meta() as $key => $value) {
+            $prefixed->{$lang .'|meta#' . $key} = $value;
+        }
+        return htmlentities(json_encode($prefixed));
+    }
+
 }

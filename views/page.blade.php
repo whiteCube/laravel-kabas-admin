@@ -12,7 +12,7 @@
     </div>
     <form class="page__form" method="POST" action="{{ route('kabas.admin.page.submit') }}">
         {{ csrf_field() }}
-        <input name="structure" type="hidden" value="{{ $page->structure()->file() }}">
+        <input name="route" type="hidden" value="{{ $page->route() }}">
         <div class="tabs">
             <div class="tabs__header">
                 @foreach(Admin::locales() as $i =>$lang)
@@ -36,8 +36,7 @@
                 </div>
                 <div class="page__editables">
                     <div class="page__editable page__editable--general" id="{{$lang}}-kabas-general">
-                        <groupfield label="Page" :options="{!! htmlentities(json_encode($page->structure()->meta())) !!}" :values="{!! htmlentities(json_encode([])) !!}"></groupfield>
-                        @foreach ($page->fields() as $key => $field)
+                        <groupfield label="Page" :options="{!! $page->structure()->prefixedMeta($lang) !!}" :values="{!! htmlentities(json_encode([])) !!}"></groupfield>
                         @foreach ($page->fields()->general() as $key => $field)
                             {!! $field->render($lang) !!}
                         @endforeach
