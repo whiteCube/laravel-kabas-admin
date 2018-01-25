@@ -6,24 +6,62 @@ use Illuminate\Support\Facades\Storage as Store;
 
 class Storage {
 
-    static function values($lang, $file)
+    /**
+     * Get the values from json file
+     * @param string $locale
+     * @param string $file
+     * @return object
+     */
+    static function values($locale, $file)
     {
-        return json_decode(Store::disk('admin_values')->get($lang . '/static/' . $file));
+        return json_decode(Store::disk('admin_values')->get($locale . '/static/' . $file));
     }
 
+    /**
+     * Get a structure json file
+     * @param string $structure
+     * @return object
+     */
     static function structure($structure)
     {
         return json_decode(Store::disk('admin_structures')->get($structure));
     }
 
-    static function save($lang, $file, $data)
+    /**
+     * Read values and update them with new ones
+     * @param string $locale
+     * @param string $file
+     * @param array $data
+     * @return void
+     */
+    static function update($locale, $file, $data)
     {
-        return Store::disk('admin_values')->put($lang . '/static/' . $file, json_encode($data, JSON_PRETTY_PRINT));
+        $previous = (array) Storage::values($locale, $file);
+        $new = array_replace_recursive($previous, $data);
+        return self::save($locale, $file, $new);
     }
 
-    static function lastModified($lang, $file)
+    /**
+     * Write data to json
+     * @param string $locale
+     * @param string $file
+     * @param array $data
+     * @return void
+     */
+    static function save($locale, $file, $data)
     {
-        return Store::disk('admin_values')->lastModified($lang . '/static/' . $file);
+        return Store::disk('admin_values')->put($locale . '/static/' . $file, json_encode($data, JSON_PRETTY_PRINT));
+    }
+
+    /**
+     * Get the last modified date for a file
+     * @param string $locale
+     * @param string $file
+     * @return string
+     */
+    static function lastModified($locale, $file)
+    {
+        return Store::disk('admin_values')->lastModified($locale . '/static/' . $file);
     }
 
 }
