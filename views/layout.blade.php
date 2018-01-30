@@ -38,7 +38,8 @@
             "sub": {
                 "group": "%s field|%s fields",
                 "repeater": "%s item|%s items",
-                "gallery": "%s image|%s images"
+                "gallery": "%s image|%s images",
+                "flexible": "%s item| %s items"
             }
         },
         "date": {

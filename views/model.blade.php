@@ -74,9 +74,6 @@
                 @if(isset($model->fields->translated))
                 <div class="page__editables">
                     <div class="page__editable page__editable--general" id="{{$lang}}-kabas-general">
-                        {{-- @foreach ($model->fields as $key => $field)
-                            {!! $field->render($lang) !!}
-                        @endforeach --}}
                         @foreach ($model->fields->translated as $key => $field)
                             {!! $field->render($lang) !!}
                         @endforeach

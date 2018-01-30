@@ -37,14 +37,22 @@ class Bag
     protected $fields;
 
     /**
+     * A class to handle file uploads
+     * @var FileUploader
+     */
+    protected $uploader;
+
+    /**
      * Create an instance
      * @param Request $request
      */
     public function __construct(Request $request)
     {
+        $this->request = $request;
         $this->raw = $request->all();
-        $this->route = $this->raw['route'];
+        $this->route = $this->raw['route'] ?? false;
         $this->extract();
+        $this->uploader = new FileUploader($request, $this->fields);
     }
 
     /**
@@ -54,7 +62,7 @@ class Bag
     protected function extract()
     {
         foreach ($this->raw as $key => $item) {
-            if ($key == 'route' || $key == '_token') continue;
+            if ($key == 'route' || $key == '_token' || $key == 'structure') continue;
             $this->map($key, $item);
         }
     }
@@ -137,6 +145,15 @@ class Bag
     {
         if($lang) return $this->meta[$lang];
         return $this->meta;
+    }
+
+    /**
+     * Save uploaded files to disk
+     * @return void
+     */
+    public function upload()
+    {
+        $this->fields = $this->uploader->upload();
     }
 
 }

@@ -1,9 +1,9 @@
 <?php
 
-namespace WhiteCube\Admin;
+namespace WhiteCube\Admin\Config;
 use WhiteCube\Admin\Traits\Getters;
 
-class Config {
+class PageConfig {
 
     use Getters;
 

@@ -10,7 +10,7 @@
         <a class="topbar__link link" target="_blank" href="{{ $page->route() }}">Voir la page</a>
         @endif
     </div>
-    <form class="page__form" method="POST" action="{{ route('kabas.admin.page.submit') }}">
+    <form class="page__form" method="POST" action="{{ route('kabas.admin.page.submit') }}" enctype="multipart/form-data">
         {{ csrf_field() }}
         <input name="route" type="hidden" value="{{ $page->route() }}">
         <div class="tabs">
@@ -38,7 +38,7 @@
                     <div class="page__editable page__editable--general" id="{{$lang}}-kabas-general">
                         <groupfield label="Page" :options="{!! $page->structure()->prefixedMeta($lang) !!}" :values="{!! $page->meta()->prefixedValues($lang) !!}"></groupfield>
                         @foreach ($page->fields()->general() as $key => $field)
-                            {!! $field->render($lang) !!}
+                        {!! $field->render($lang) !!}
                         @endforeach
                     </div>
                     @foreach($page->fields()->tabbed() as $key => $group)

@@ -9,6 +9,21 @@
     </div>
     
     <section>
+    {{-- TODO: mettre une option dans le fichier de config pour activer l'affichage en tableaux --}}
+    @if(false)
+        <ktable>
+            <tablerow>
+                <tableheading main id="page">Page</tableheading>
+                <tableheading id="lastmod">Last edit</tableheading>
+            </tablerow>
+            @foreach($pages as $page)
+            <tablerow href="{{ route('kabas.admin.page', ['route' => $page->route()]) }}">
+                <tablecell label="page">{{ $page->config()->name() }}</tablecell>
+                <tablecell label="lastmod">{{ $page->lastModified()->format('d-m-Y H:i') }}</tablecell>
+            </tablerow>
+            @endforeach
+        </ktable>
+    @else
     @foreach($pages as $page)
         <card edit="{{ route('kabas.admin.page', ['route' => $page->route()]) }}" view="{{ $page->route() }}" icon="{{ $page->config()->icon() }}">
             <template slot="title">{{ $page->config()->name() }}</template>
@@ -20,5 +35,6 @@
         </card>
     @endforeach 
     </section>
+    @endif
     
 @endsection

@@ -4,8 +4,8 @@ namespace WhiteCube\Admin\Controllers;
 
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use WhiteCube\Admin\RequestBag;
 use WhiteCube\Admin\Facades\Admin;
+use WhiteCube\Admin\Request\Bag as RequestBag;
 use Illuminate\Routing\Controller as BaseController;
 
 class ModelController extends BaseController
@@ -31,10 +31,10 @@ class ModelController extends BaseController
     public function process(Request $request)
     {
         $requestbag = new RequestBag($request);
-        $structure = str_replace('models/', '', $requestbag->structure());
+        $structure = str_replace('models/', '', $request->structure);
         $model = Admin::model($structure);
         $item = call_user_func($model->config->model . '::find', $request->id);
-        foreach ($requestbag->items() as $key => $value) {
+        foreach ($requestbag->fields() as $key => $value) {
             if (isset($model->fields->$key) && $model->fields->$key->type == 'date') {
                 $value = Carbon::createFromFormat('d F Y', $value);
             }

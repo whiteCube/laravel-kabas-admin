@@ -80,4 +80,13 @@ class Structure {
         return htmlentities(json_encode($prefixed));
     }
 
+    /**
+     * Extract the route name from the file name
+     * @return string
+     */
+    public function route()
+    {
+        return str_replace('.json', '', $this->file);
+    }
+
 }

@@ -80,7 +80,7 @@ trait ContainsFields {
     {
         $data = [];
         foreach($this->items as $key => $field) {
-            $data[$key] = $field->value($locale);
+            $data[$key] = $field->value($locale)->get();
         } 
         return $data;
     }

@@ -61,13 +61,6 @@ class Model
         }
     }
 
-    // public function setValues($values)
-    // {
-    //     foreach($this->values as $lang => $data) {
-    //         $this->values[$lang] = (object) array_merge((array) $data, $values[$lang]);
-    //     }
-    // }
-
     public function save()
     {
         foreach ($this->values as $lang => $data) {

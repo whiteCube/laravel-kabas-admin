@@ -9,6 +9,11 @@ class Field
     public $label;
     public $structure;
 
+    /**
+     * Create an instance
+     * @param string $key
+     * @param object $structure
+     */
     public function __construct($key, $structure)
     {
         $this->key = $key;
@@ -17,6 +22,10 @@ class Field
         $this->type = $this->structure->type;
     }
 
+    /**
+     * Check if this field can contain other fields
+     * @return boolean
+     */
     public function isNestable()
     {
         return ($this->structure->type == 'repeater' ||
@@ -25,64 +34,112 @@ class Field
                 $this->structure->type == 'gallery');
     }
 
-    protected function prefixSubfields($options, $lang, $name)
+    /**
+     * Add prefixes to the fields contained by this field
+     * @param object $subfields
+     * @param string $locale
+     * @param string $name
+     * @return void
+     */
+    protected function prefixSubfields($subfields, $locale, $name)
     {
-        if (!isset($options)) return;
-        if (isset($options->options)) {
-            return $this->prefixSubfields($options->options, $lang, $name);
+        if (!isset($subfields)) return;
+        if (isset($subfields->options)) {
+            return $this->prefixSubfields($subfields->options, $locale, $name);
         }
-        foreach ($options as $key => $field) {
+        foreach ($subfields as $key => $field) {
             if (isset($field->options)) {
-                $this->prefixSubfields($field->options, $lang, $name . '[' . $key . ']');
+                $this->prefixSubfields($field->options, $locale, $name . '[' . $key . ']');
             }
-            $field->name = $lang . '|' . $name . '>' . $key;
+            $field->name = $locale . '|' . $name . '>' . $key;
         }
     }
 
-    public function render($lang)
+    /**
+     * Render some html to put into the page
+     * @param string $locale
+     * @return void
+     */
+    public function render($locale)
     {
         if (isset($this->structure->controllers->show)) {
-            return $this->callUserShowMethod($lang);
+            return $this->callUserShowMethod($locale);
         }
+        
         if ($this->isNestable() && isset($this->structure->options)) {
-            $this->prefixSubfields($this->structure->options, $lang, $this->key);
+            $this->prefixSubfields($this->structure->options, $locale, $this->key);
         }
 
-        $value = $this->values[$lang] ?? '';
-
-        if ($this->type == 'date') {
-            $value = (string) ($this->values[$lang] ?? '');
-        }
-
-        $name = $lang . '|' . $this->key;
-        if ($lang == 'shared') $name = $this->key;
+        $value = $this->value($locale);
 
         return '<genericfield 
-                    name="' . $name . '" 
+                    name="' . $this->name($locale) . '" 
                     :structure="' . htmlspecialchars(json_encode($this->structure, ENT_QUOTES)) . '" 
-                    :value="' . htmlspecialchars(json_encode($value ?? '')) . '" ></genericfield>';
+                    :value="' . htmlspecialchars(json_encode($value->get() ?? '')) . '" ></genericfield>';
     }
 
-    protected function callUserShowMethod($lang)
+    /**
+     * Call a custom render process
+     * @param string $locale
+     * @return string
+     */
+    protected function callUserShowMethod($locale)
     {
         $parts = explode('@', $this->structure->controllers->show);
         $controller = new $parts[0];
-        return call_user_func([$controller, $parts[1]], $this, $lang);
+        return call_user_func([$controller, $parts[1]], $this, $locale);
     }
 
+    /**
+     * Set the value of this field
+     * @param mixed $value
+     * @param string $locale
+     * @return void
+     */
     public function setValue($value, $locale = false)
     {
-        if (!$locale) return $this->values = $value;
-        $this->values[$locale] = $value;
+        if (!$locale) {
+            if($this->values instanceof Value) {
+                return $this->values->setRaw($value);
+            } else {
+                return $this->values = new Value($value, $this->type);
+            }
+        }
+        if(isset($this->values[$locale])) {
+            $this->values[$locale]->setRaw($value);
+        } else {
+            $this->values[$locale] = new Value($value, $this->type);
+        }
     }
 
-    public function value($lang)
+    /**
+     * Read the value for the specified locale
+     * @param string $locale
+     * @return mixed
+     */
+    public function value($locale)
     {
-        return $this->values[$lang] ?? '';
+        return $this->values[$locale] ?? new Value(null, $this->type);
     }
 
+    /**
+     * Check if this field is tabbed
+     * @return boolean
+     */
     public function isTabbedGroup()
     {
         return $this->type == 'group' && ($this->structure->tabbed ?? false);
+    }
+
+    /**
+     * Compute the name attribute of the field
+     * @param string $locale
+     * @return string
+     */
+    protected function name($locale)
+    {
+        $name = $locale . '|' . $this->key;
+        if ($locale == 'shared') $name = $this->key;
+        return $name;
     }
 }

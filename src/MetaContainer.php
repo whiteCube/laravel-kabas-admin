@@ -33,7 +33,7 @@ class MetaContainer implements IteratorAggregate {
     {
         $prefixed = new \stdClass;
         foreach ($this->items as $key => $field) {
-            $prefixed->{$locale . '|meta#' . $key} = $field->value($locale);
+            $prefixed->{$locale . '|meta#' . $key} = $field->value($locale)->get();
         }
         return htmlentities(json_encode($prefixed));
     }

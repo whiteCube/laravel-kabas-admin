@@ -31,7 +31,7 @@ class FieldsContainer implements IteratorAggregate {
     public function tabbed()
     {
         return array_filter($this->items, function($item) {
-            return $item->type == 'group' && ($item->structure->tabbed ?? false);
+            return $item->isTabbedGroup();
         });
     }
 
@@ -42,7 +42,7 @@ class FieldsContainer implements IteratorAggregate {
     public function general()
     {
         return array_filter($this->items, function ($item) {
-            return (!isset($item->structure->tabbed) || !$item->structure->tabbed);
+            return !$item->isTabbedGroup();
         });
     }
 

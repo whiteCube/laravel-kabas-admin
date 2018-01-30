@@ -5,6 +5,7 @@ namespace WhiteCube\Admin;
 use Carbon\Carbon;
 use WhiteCube\Admin\Facades\Admin;
 use WhiteCube\Admin\Traits\Getters;
+use WhiteCube\Admin\Config\PageConfig;
 
 class Page {
 
@@ -36,7 +37,7 @@ class Page {
     
     /**
      * Internal configuration for this page
-     * @var Config
+     * @var PageConfig
      */
     protected $config;
 
@@ -47,20 +48,11 @@ class Page {
     public function __construct($file)
     {
         $this->structure = new Structure($file);
-        $this->route = $this->extractRoute();
+        $this->route = $this->structure->route();
         $this->fields = new FieldsContainer($this->structure->fields());
         $this->meta = new MetaContainer($this->structure->meta());
-        $this->config = new Config($this->structure->config());
+        $this->config = new PageConfig($this->structure->config());
         $this->loadValues();
-    }
-
-    /**
-     * Extract the route name from the file name
-     * @return string
-     */
-    protected function extractRoute()
-    {
-        return str_replace('.json', '', $this->structure->file());
     }
 
     /**
@@ -104,6 +96,5 @@ class Page {
             $data = array_merge($data, $fields);
             Storage::update($locale, $this->structure->file(), $data);
         }
-        die();
     }
 }
