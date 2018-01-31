@@ -7,6 +7,7 @@ class Field
     protected $values = [];
     public $type;
     public $label;
+    public $description;
     public $structure;
 
     /**
@@ -19,6 +20,7 @@ class Field
         $this->key = $key;
         $this->structure = $structure;
         $this->label = $this->structure->label;
+        $this->description = $this->structure->description ?? null;
         $this->type = $this->structure->type;
     }
 
@@ -74,6 +76,7 @@ class Field
 
         return '<genericfield 
                     name="' . $this->name($locale) . '" 
+                    description="'. $this->description .'"
                     :structure="' . htmlspecialchars(json_encode($this->structure, ENT_QUOTES)) . '" 
                     :value="' . htmlspecialchars(json_encode($value->get() ?? '')) . '" ></genericfield>';
     }
@@ -96,15 +99,8 @@ class Field
      * @param string $locale
      * @return void
      */
-    public function setValue($value, $locale = false)
+    public function setValue($value, $locale = 'shared')
     {
-        if (!$locale) {
-            if($this->values instanceof Value) {
-                return $this->values->setRaw($value);
-            } else {
-                return $this->values = new Value($value, $this->type);
-            }
-        }
         if(isset($this->values[$locale])) {
             $this->values[$locale]->setRaw($value);
         } else {
@@ -120,6 +116,21 @@ class Field
     public function value($locale)
     {
         return $this->values[$locale] ?? new Value(null, $this->type);
+    }
+
+    /**
+     * Check if this field is shared
+     * @return boolean
+     */
+    public function isShared()
+    {
+        return isset($this->values['shared']);
+    }
+
+    public function isTranslated()
+    {
+        dd($this->values);
+        return '';
     }
 
     /**

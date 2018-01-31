@@ -10,18 +10,24 @@ use Illuminate\Routing\Controller as BaseController;
 
 class ModelController extends BaseController
 {
-    public function list($file)
+    public function list($route)
     {
+        $model = Admin::models()->get($route);
+        if(request()->search) {
+            // TODO: rechercher sur les colonnes qui sont dans "searchable" dans la structure
+        }
+        $items = $model->all();
         return view('admin::models')->with([
-            'model' => Admin::model($file)
+            'model' => $model,
+            'items' => $items
         ]);
     }
 
-    public function show($file, $id)
+    public function show($route, $id)
     {
-        $item = call_user_func(Admin::model($file)->config->model . '::find', $id);
-        $model = Admin::model($file);
-        $model->setValues($item);
+        $model = Admin::models()->get($route);
+        $item = $model->find($id)->first();
+        $model->fields()->fill($item);
         return view('admin::model')->with([
             'model' => $model,
             'item' => $item

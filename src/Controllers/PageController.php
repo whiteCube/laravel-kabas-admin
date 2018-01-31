@@ -11,15 +11,13 @@ class PageController extends BaseController
 {
     public function show($route)
     {
-        $page = Admin::page($route);
-        return view('admin::page')->with([
-            'page' => $page
-        ]);
+        $page = Admin::pages()->get($route);
+        return view('admin::page', ['page' => $page]);
     }
 
     public function process(Request $request)
     {
-        $page = Admin::page($request->route);
+        $page = Admin::pages()->get($request->route);
         $bag = new RequestBag($request);
         $bag->upload();
         $page->meta()->merge($bag->meta());

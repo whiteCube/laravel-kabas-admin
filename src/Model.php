@@ -1,97 +1,57 @@
-<?php 
+<?php
 
 namespace WhiteCube\Admin;
 
-use WhiteCube\Admin\Facades\Admin as Admin;
-use Carbon\Carbon;
+use WhiteCube\Admin\Traits\Getters;
+use WhiteCube\Admin\Config\ModelConfig;
+use WhiteCube\Admin\Containers\FieldsContainer;
 
-class Model
-{
-    use Pageable;
+class Model {
 
-    public $structure;
-    public $file;
-    protected $items;
-    public $url;
-    public $name;
-    public $fields;
+    use Getters;
 
-    public function __construct($structure)
+    /**
+     * This page's fields
+     * @var FieldContainer
+     */
+    protected $fields;
+
+    /**
+     * This page's structure
+     * @var Structure
+     */
+    protected $structure;
+
+    /**
+     * This page's route name
+     * @var string
+     */
+    protected $route;
+
+    /**
+     * Internal configuration for this page
+     * @var ModelConfig
+     */
+    protected $config;
+
+    /**
+     * Create an instance
+     * @param string $file
+     */
+    public function __construct($file)
     {
-        $this->structure = $structure;
-        $this->file = str_replace('models/', '', $structure);
-        $this->url = str_replace('.json', '', $structure);
-        $this->fields = $this->loadFields();
-        $this->groups = $this->extractTabbedGroups();
-        $this->config = $this->fields->kabas;
-        $this->name = $this->fields->kabas->name;
-        $this->items = $this->loadItems();
+        $this->structure = new Structure($file);
+        $this->route = $this->structure->route();
+        $this->fields = new FieldsContainer($this->structure->fields());
+        $this->config = new ModelConfig($this->structure->config());
     }
 
-    protected function loadItems()
+    public function __call($method, $params = false)
     {
-        return call_user_func($this->config->model . '::all');
+        if(isset($this->$method)) return $this->$method;
+        $method = $this->config->model() . '::' . $method;
+        if(!$params) return call_user_func($method);
+        return call_user_func($method, $params);
     }
 
-    public function items()
-    {
-        return $this->items;
-    }
-
-    public function value($key, $lang)
-    {
-        return $this->values[$lang]->$key ?? 'not found';
-    }
-
-    public function setValues($item)
-    {
-        foreach ($this->fields as $key => $field) {
-            if ($key == 'kabas' || $key == 'translated') {
-                continue;
-            }
-            $field->setValue($item->$key, 'shared');
-        }
-        foreach (Admin::locales() as $locale) {
-            if (!isset($this->fields->translated)) {
-                return;
-            }
-            foreach ($this->fields->translated as $key => $field) {
-                $field->setValue($item->translate($locale)->$key, $locale);
-            }
-        }
-    }
-
-    public function save()
-    {
-        foreach ($this->values as $lang => $data) {
-            Storage::values($lang, $file, $data);
-        }
-    }
-
-    public function lastModified()
-    {
-        $timestamps = [];
-        foreach (Admin::locales() as $locale) {
-            $timestamps[$locale] = Storage::lastModified($locale, $file);
-        }
-        sort($timestamps);
-        return Carbon::createFromTimestamp($timestamps[count($timestamps) - 1]);
-    }
-
-    public function sharedFields()
-    {
-        return array_diff_key((array) $this->fields, ['kabas' => '', 'translated' => '']);
-    }
-
-    public function hasSharedFields()
-    {
-        $count = 0;
-        foreach ($this->fields as $key => $field) {
-            if ($key == 'kabas' || $key == 'translated') {
-                continue;
-            }
-            $count++;
-        }
-        return $count;
-    }
 }

@@ -7,7 +7,7 @@
             <h2 class="topbar__title">{{ $page->config()->name() }}</h2>
         </div>
         @if($page->route())
-        <a class="topbar__link link" target="_blank" href="{{ $page->route() }}">Voir la page</a>
+        {{--  <a class="topbar__link link" target="_blank" href="{{ route($page->route()) }}">Voir la page</a>  --}}
         @endif
     </div>
     <form class="page__form" method="POST" action="{{ route('kabas.admin.page.submit') }}" enctype="multipart/form-data">
@@ -15,9 +15,17 @@
         <input name="route" type="hidden" value="{{ $page->route() }}">
         <div class="tabs">
             <div class="tabs__header">
+                <div class="tabs__dropdown">
                 @foreach(Admin::locales() as $i =>$lang)
-                    <a href="#" class="tabs__link{{ $i == 0 ? ' tabs__link--active' : '' }}" data-target="{{ $lang }}">{{ $lang }}</a>
+                    @if($i == 0)
+                    <span class="tabs__toggle">
+                        <a class="tabs__link tabs__link--active" data-target="{{ $lang }}">{{ $lang }}</a>
+                    </span>
+                    @else
+                    <a href="#" class="tabs__link" data-target="{{ $lang }}">{{ $lang }}</a>
+                    @endif
                 @endforeach
+                </div>
             </div>
         @foreach (Admin::locales() as $i => $lang)
             <div class="tabs__item{{ $i == 0 ? ' tabs__item--active' : '' }}" id="{{ $lang }}">

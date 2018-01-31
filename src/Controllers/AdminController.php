@@ -10,7 +10,7 @@ class AdminController extends BaseController {
     public function index()
     {
         return view('admin::index')->with([
-            'pages' => Admin::pages(),
+            'pages' => Admin::pages()->sorted(),
             'locales' => Admin::locales()
         ]);
     }

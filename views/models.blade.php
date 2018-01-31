@@ -3,26 +3,27 @@
 @section('main')
     <div class="topbar">
         <div class="topbar__text">
-            <h2 class="topbar__title">{{ $model->name }}</h2>
-            <span class="topbar__counter">{{ $model->items()->count() }}</span>
+            <h2 class="topbar__title">{{ $model->config()->name() }}</h2>
+            <span class="topbar__counter">{{ $items->count() }}</span>
         </div>
-        <btn primary icon="pages" href="{{ route('kabas.admin.model.add', ['file' => $model->file]) }}">New entry</btn>
+        <btn primary icon="pages" href="{{ route('kabas.admin.model.add', ['file' => $model->structure()->file()]) }}">New entry</btn>
+        <searchbox action="#" placeholder="Search..." btntext="Search" name="search"></searchbox>
     </div>
-
+    @if($items->count())
     <ktable>
         <tablerow>
-            @foreach($model->config->columns as $key => $column)
+            @foreach($model->config()->columns() as $key => $column)
             <tableheading {{ (isset($column->main) && $column->main) ? 'main' : '' }} id="{{ $key }}">{{ $column->title }}</tableheading>
             @endforeach
             <tableheading id="actions">Actions</tableheading>
         </tablerow>
-        @foreach($model->items() as $item)
-        <tablerow href="{{ route('kabas.admin.model.item', ['file' => $model->file, 'id' => $item->id]) }}">
-            @foreach($model->config->columns as $key => $column)
+        @foreach($items as $item)
+        <tablerow href="{{ route('kabas.admin.model.item', ['file' => $model->structure()->route(), 'id' => $item->id]) }}">
+            @foreach($model->config()->columns() as $key => $column)
             <tablecell label="{{ $key }}">{{ $item->$key }}</tablecell>
             @endforeach
             <tablecell label="actions">
-                <form action="{{ route('kabas.admin.model.destroy', ['file' => $model->file, 'id' => $item->id]) }}" method="POST">
+                <form action="{{ route('kabas.admin.model.destroy', ['file' => $model->structure()->route(), 'id' => $item->id]) }}" method="POST">
                     {{ csrf_field() }}
                     <input type="hidden" name="_method" value="DELETE">
                     <input type="submit" value="Delete">
@@ -31,6 +32,12 @@
         </tablerow>
         @endforeach
     </ktable>
+    @else 
+    <div class="message">
+        <illu class="message__illu" type="tex"></illu>
+        <p class="message__text">Nothing to show</p>
+    </div>
+    @endif
     
     
 @endsection

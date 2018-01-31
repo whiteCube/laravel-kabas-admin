@@ -86,7 +86,7 @@ class Structure {
      */
     public function route()
     {
-        return str_replace('.json', '', $this->file);
+        return str_replace(['.json', 'customs/', 'models/'], '', $this->file);
     }
 
 }

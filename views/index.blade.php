@@ -9,8 +9,7 @@
     </div>
     
     <section>
-    {{-- TODO: mettre une option dans le fichier de config pour activer l'affichage en tableaux --}}
-    @if(false)
+    @if(Admin::tableview())
         <ktable>
             <tablerow>
                 <tableheading main id="page">Page</tableheading>

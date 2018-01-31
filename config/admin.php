@@ -19,5 +19,28 @@ return [
      */
     'stylesheets' => [
         
-    ]
+    ],
+
+    /**
+     * The route to log out your user accounts
+     */
+    'logout' => [
+        'method' => 'GET',
+        'route' => ''
+    ],
+
+    /**
+     * The path to your logo (path starts in the public folder)
+     */
+    'logo' => '',
+
+    /**
+     * Display index as a table instead of cards
+     */
+    'tableview' => false,
+
+    /**
+     * The name of the route to the home page
+     */
+    'home' => ''
 ];

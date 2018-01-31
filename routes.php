@@ -10,4 +10,5 @@ Route::group(['middleware' => ['web', Admin::middleware()], 'prefix' => 'admin']
     Route::get('models/{file}/{id}', 'WhiteCube\Admin\Controllers\ModelController@show')->name('kabas.admin.model.item');
     Route::post('models', 'WhiteCube\Admin\Controllers\ModelController@process')->name('kabas.admin.model.submit');
     Route::delete('models/{file}/{id}', 'WhiteCube\Admin\Controllers\ModelController@destroy')->name('kabas.admin.model.destroy');
+    Route::get('customs/{file}', 'WhiteCube\Admin\Controllers\CustomController@show')->name('kabas.admin.custom');
 });

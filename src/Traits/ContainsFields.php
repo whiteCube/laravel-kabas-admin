@@ -4,8 +4,12 @@ namespace WhiteCube\Admin\Traits;
 
 use ArrayIterator;
 use WhiteCube\Admin\Field;
+use WhiteCube\Admin\Facades\Admin;
 
 trait ContainsFields {
+
+    protected $shared = [];
+    protected $translated = [];
 
     /**
      * Create instances for each field
@@ -16,6 +20,10 @@ trait ContainsFields {
     {
         $fields = [];
         foreach ($structure as $key => $struct) {
+            if($key == 'translated') {
+                $fields = array_merge($fields, $this->createFields($struct));
+                continue;
+            }
             $fields[$key] = new Field($key, $struct);
         }
         return $fields;
@@ -39,7 +47,7 @@ trait ContainsFields {
      * @param string $locale
      * @return void
      */
-    public function set($key, $value, $locale)
+    public function set($key, $value, $locale = false)
     {
         $this->items[$key]->setValue($value, $locale);
     }
@@ -71,6 +79,36 @@ trait ContainsFields {
         }
     }
 
+    /**
+     * Fill the fields with a model's values
+     * @param Eloquent $model
+     * @return void
+     */
+    public function fill($model)
+    {
+        foreach($this->items as $key => $field) {
+            if (!in_array($key, $model->translatedAttributes ?? [])) {
+                $this->shared[] = $key;
+                $field->setValue($model->$key);
+            } else {
+                foreach (Admin::locales() as $locale) {
+                    $this->translated[] = $key;
+                    $field->setValue($model->translate($locale)->$key, $locale);
+                }
+            }
+        }
+    }
+
+    public function hasShared()
+    {
+        return count($this->shared) > 0;
+    }
+
+    public function hasTranslated()
+    {
+        return count($this->translated) > 0;
+    }
+    
     /**
      * Generate assoc array containing all values
      * @param locale $locale

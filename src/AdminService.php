@@ -2,23 +2,61 @@
 
 namespace WhiteCube\Admin;
 use Illuminate\Support\Facades\Storage;
+use WhiteCube\Admin\Containers\PagesContainer;
+use WhiteCube\Admin\Containers\ModelsContainer;
 
 class AdminService {
 
+    /**
+     * The configuration data
+     * @var Repository
+     */
+    protected $config;
+
+    /**
+     * The pages
+     * @var PagesContainer
+     */
     protected $pages;
+
+    /**
+     * The models
+     * @var ModelsContainer
+     */
     protected $models;
 
-    public function __construct($config, FileWorker $fileworker)
+    /**
+     * The custom pages
+     * @var array
+     */
+    protected $customs;
+
+    /**
+     * Create an instance
+     * @param Repository $config
+     */
+    public function __construct($config)
     {
         $this->config = $config;
-        $this->fileworker = $fileworker;
+        $this->pages = new PagesContainer();
+        $this->models = new ModelsContainer();
     }
 
     /**
-     * Return the config array
-     * @return array
+     * Start loading values
+     * @return void
      */
-    public function config() : array
+    public function load()
+    {
+        $this->pages->load();
+        $this->models->load();
+    }
+
+    /**
+     * Return the config repository
+     * @return Repository
+     */
+    public function config()
     {
         return $this->config;
     }
@@ -31,57 +69,53 @@ class AdminService {
         return $this->config['kabas-admin'][$method];
     }
 
-    public function fileworker()
+    /**
+     * Get a list of the pages defined in the application
+     * @return PagesContainer
+     */
+    public function pages()
     {
-        return $this->fileworker;
+        return $this->pages;
     }
 
     /**
-     * Get a list of the pages defined in the application
+     * Get the list of models
+     * @return ModelsContainer
+     */
+    public function models()
+    {
+        return $this->models;
+    }
+
+    /**
+     * Load and/or get the list of custom pages
      * @return array
      */
-    public function pages() : array
+    public function customs() : array
     {
-        if(count($this->pages)) return $this->pages;
-        $pages = [];
-        foreach($this->fileworker->files('admin_structures') as $file) {
-            $pages[$file] = new Page($file);
-        }
-        usort($pages, function($a, $b) {
-            return strcmp($a->config()->name(), $b->config()->name());
-        });
-        $this->pages = $pages;
-        return $pages;
+        if (count($this->customs)) return $this->customs;
+        $customs = [];
+        // foreach ($this->fileworker->files('admin_structures', 'customs') as $file) {
+        //     $customs[$file] = new Custom($file);
+        // }
+        // usort($customs, function ($a, $b) {
+        //     return strcmp($a->config()->name(), $b->config()->name());
+        // });
+        // $this->customs = $customs;
+        return $customs;
     }
 
-    public function page($route)
+    /**
+     * Get a single custom page
+     * @param string $route
+     * @return Custom
+    */
+    public function custom($route)
     {
-        foreach($this->pages() as $page) {
-            if($page->route() == $route) return $page;
-        }
-        return null;
-    }
-
-    public function models() : array
-    {
-        if(count($this->models)) return $this->models;
-        $models = [];
-         foreach($this->fileworker->files('admin_structures', 'models') as $file) {
-            $models[$file] = new Model($file);
-        }
-        usort($models, function($a, $b) {
-            return strcmp($a->name, $b->name);
-        });
-        $this->models = $models;
-        return $models;
-    }
-
-
-    public function model($filename)
-    {
-        foreach($this->models() as $model) {
-            if($model->file == $filename) return $model;
+        foreach ($this->customs() as $custom) {
+            if ($custom->route() == $route) return $custom;
         }
         return null;
     }
+
 }

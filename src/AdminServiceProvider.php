@@ -28,9 +28,9 @@ class AdminServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->singleton('admin', function ($app) {
-            $config = $app->make('config');
-            return new AdminService($config, new FileWorker);
+            return new AdminService($app->make('config'));
         });
+        $this->app->admin->load();
         $this->app->singleton('page', Page::class);
     }
 

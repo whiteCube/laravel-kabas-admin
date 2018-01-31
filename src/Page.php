@@ -6,6 +6,8 @@ use Carbon\Carbon;
 use WhiteCube\Admin\Facades\Admin;
 use WhiteCube\Admin\Traits\Getters;
 use WhiteCube\Admin\Config\PageConfig;
+use WhiteCube\Admin\Containers\MetaContainer;
+use WhiteCube\Admin\Containers\FieldsContainer;
 
 class Page {
 

@@ -106,7 +106,15 @@
 }'>
         <header class="header">
             <div class="container">
-                
+                <a href="{{ route(Admin::home()) }}" class="header__branding">
+                    <img src="{{ asset(Admin::logo()) }}" class="header__logo">
+                </a>
+                <div class="header__right">
+                    <form action="{{ route(Admin::logout()['route']) }}" method="{{ Admin::logout()['method'] }}">
+                        {{ csrf_field() }}
+                        <input class="header__logout" type="submit" value="Logout">
+                    </form>
+                </div>
             </div>
             <span class="header__bottom"></span>
         </header>

@@ -13,14 +13,22 @@
         <input name="structure" type="hidden" value="{{ $model->structure }}">
         <div class="tabs">
             <div class="tabs__header">
+                <div class="tabs__dropdown">
                 @if($model->hasSharedFields())
-                <a href="#" class="tabs__link tabs__link--active" data-target="shared">Shared</a>
+                    <span class="tabs__toggle">
+                        <a href="#" class="tabs__link tabs__link--active" data-target="shared">Shared</a>
+                    </span>
                 @endif
-                @if(isset($model->fields->translated))
-                @foreach(Admin::locales() as $i => $lang)
+                @foreach(Admin::locales() as $i =>$lang)
+                    @if(!$model->hasSharedFields())
+                    <span class="tabs__toggle">
+                        <a class="tabs__link tabs__link--active" data-target="{{ $lang }}">{{ $lang }}</a>
+                    </span>
+                    @else
                     <a href="#" class="tabs__link" data-target="{{ $lang }}">{{ $lang }}</a>
+                    @endif
                 @endforeach
-                @endif
+                </div>
             </div>
             @if($model->hasSharedFields())
             <div class="tabs__item tabs__item--active" id="shared">

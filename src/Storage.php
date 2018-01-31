@@ -28,6 +28,15 @@ class Storage {
     }
 
     /**
+     * Get the list of structure files
+     * @return array
+     */
+    static function structures($disk, $directory = '')
+    {
+        return Store::disk($disk)->files($directory);
+    }
+
+    /**
      * Read values and update them with new ones
      * @param string $locale
      * @param string $file
