@@ -46,6 +46,10 @@ class FieldsContainer implements IteratorAggregate {
         });
     }
 
+    /**
+     * Get the untranslated fields
+     * @return array
+     */
     public function shared()
     {
         return array_filter($this->items, function ($key) {
@@ -53,6 +57,10 @@ class FieldsContainer implements IteratorAggregate {
         }, ARRAY_FILTER_USE_KEY);
     }
 
+    /**
+     * Get the translated fields
+     * @return array
+     */
     public function translated()
     {
         return array_filter($this->items, function ($key) {

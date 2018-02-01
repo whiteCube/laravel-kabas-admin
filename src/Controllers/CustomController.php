@@ -7,6 +7,11 @@ use Illuminate\Routing\Controller as BaseController;
 
 class CustomController extends BaseController {
 
+    /**
+     * Show a custom page
+     * @param string $file
+     * @return View
+     */
     public function show($file)
     {
         $custom = Admin::custom($file);

@@ -7,6 +7,10 @@ use Illuminate\Routing\Controller as BaseController;
 
 class AdminController extends BaseController {
 
+    /**
+     * Show the admin index
+     * @return View
+     */
     public function index()
     {
         return view('admin::index')->with([

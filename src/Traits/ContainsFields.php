@@ -8,7 +8,16 @@ use WhiteCube\Admin\Facades\Admin;
 
 trait ContainsFields {
 
+    /**
+     * The list of untranslated fields
+     * @var array
+     */
     protected $shared = [];
+
+    /**
+     * The list of translated fields
+     * @var array
+     */
     protected $translated = [];
 
     /**
@@ -95,11 +104,19 @@ trait ContainsFields {
         }
     }
 
+    /**
+     * Check if there are any untranslated/shared fields
+     * @return boolean
+     */
     public function hasShared()
     {
         return count($this->shared) > 0;
     }
 
+    /**
+     * Check if there are any translated fields
+     * @return boolean
+     */
     public function hasTranslated()
     {
         return count($this->translated) > 0;

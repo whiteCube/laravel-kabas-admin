@@ -46,6 +46,12 @@ class Model {
         $this->config = new ModelConfig($this->structure->config());
     }
 
+    /**
+     * Access properties and/or forward eloquent calls
+     * @param string $method
+     * @param mixed $params
+     * @return mixed
+     */
     public function __call($method, $params = false)
     {
         if(isset($this->$method)) return $this->$method;
