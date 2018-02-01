@@ -1,7 +1,7 @@
 <nav class="kabasnav">
     <h2 class="kabasnav__title">Main navigation</h2>
     <a class="kabasnav__link kabasnav__link--primary {{ url()->current() == route('kabas.admin') ? 'kabasnav__link--active' : '' }}" href="{{ route('kabas.admin') }}">Administration</a>
-    @foreach (Admin::customs() as $custom)
+    @foreach (Admin::customs()->sorted() as $custom)
         <a class="kabasnav__link {{ url()->current() == route('kabas.admin.custom', ['file' => $custom->route()]) ? 'kabasnav__link--active' : '' }}" href="{{ route('kabas.admin.custom', ['file' => $custom->route()]) }}">
             {{ $custom->config()->name() }}
         </a>

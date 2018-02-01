@@ -9,12 +9,12 @@ class CustomController extends BaseController {
 
     /**
      * Show a custom page
-     * @param string $file
+     * @param string $route
      * @return View
      */
-    public function show($file)
+    public function show($route)
     {
-        $custom = Admin::custom($file);
+        $custom = Admin::customs()->get($route);
         $custom->run();
         return view('admin::custom')->with([
             'custom' => $custom

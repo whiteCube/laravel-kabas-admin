@@ -4,6 +4,7 @@ namespace WhiteCube\Admin;
 use Illuminate\Support\Facades\Storage;
 use WhiteCube\Admin\Containers\PagesContainer;
 use WhiteCube\Admin\Containers\ModelsContainer;
+use WhiteCube\Admin\Containers\CustomsContainer;
 
 class AdminService {
 
@@ -27,7 +28,7 @@ class AdminService {
 
     /**
      * The custom pages
-     * @var array
+     * @var CustomsContainer
      */
     protected $customs;
 
@@ -40,6 +41,7 @@ class AdminService {
         $this->config = $config;
         $this->pages = new PagesContainer();
         $this->models = new ModelsContainer();
+        $this->customs = new CustomsContainer();
     }
 
     /**
@@ -50,6 +52,7 @@ class AdminService {
     {
         $this->pages->load();
         $this->models->load();
+        $this->customs->load();
     }
 
     /**
@@ -89,33 +92,11 @@ class AdminService {
 
     /**
      * Load and/or get the list of custom pages
-     * @return array
+     * @return CustomsContainer
      */
-    public function customs() : array
+    public function customs()
     {
-        if (count($this->customs)) return $this->customs;
-        $customs = [];
-        // foreach ($this->fileworker->files('admin_structures', 'customs') as $file) {
-        //     $customs[$file] = new Custom($file);
-        // }
-        // usort($customs, function ($a, $b) {
-        //     return strcmp($a->config()->name(), $b->config()->name());
-        // });
-        // $this->customs = $customs;
-        return $customs;
-    }
-
-    /**
-     * Get a single custom page
-     * @param string $route
-     * @return Custom
-    */
-    public function custom($route)
-    {
-        foreach ($this->customs() as $custom) {
-            if ($custom->route() == $route) return $custom;
-        }
-        return null;
+        return $this->customs;
     }
 
 }
