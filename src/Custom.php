@@ -3,7 +3,6 @@
 namespace WhiteCube\Admin;
 
 use Carbon\Carbon;
-use WhiteCube\Admin\Facades\Admin;
 use WhiteCube\Admin\Traits\Getters;
 use WhiteCube\Admin\Config\CustomConfig;
 

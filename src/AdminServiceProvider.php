@@ -2,8 +2,8 @@
 
 namespace WhiteCube\Admin;
 
-use Illuminate\Support\ServiceProvider;
 use WhiteCube\Admin\Accessors\Page;
+use Illuminate\Support\ServiceProvider;
 
 class AdminServiceProvider extends ServiceProvider
 {

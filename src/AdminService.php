@@ -1,7 +1,7 @@
 <?php 
 
 namespace WhiteCube\Admin;
-use Illuminate\Support\Facades\Storage;
+
 use WhiteCube\Admin\Containers\PagesContainer;
 use WhiteCube\Admin\Containers\ModelsContainer;
 use WhiteCube\Admin\Containers\CustomsContainer;

@@ -1,6 +1,7 @@
 <?php
 
 namespace WhiteCube\Admin;
+
 use WhiteCube\Admin\Traits\Getters;
 
 class Structure {
