@@ -41,10 +41,12 @@
                         <li class="page__group">
                             <a class="page__grouplink page__grouplink--general page__grouplink--current" href="#shared-kabas-general">General</a>
                         </li>
-                    @foreach($model->fields()->tabbed() as $key => $group)
+                    @foreach($model->fields()->shared() as $key => $field)
+                    @if($field->isTabbedGroup())
                         <li class="page__group">
-                            <a class="page__grouplink" href="#shared-{{ $key }}">{{ $group->label }}</a>
+                            <a class="page__grouplink" href="#shared-{{ $key }}">{{ $field->label }}</a>
                         </li>
+                    @endif
                     @endforeach
                     </ul>
                 </div>
@@ -52,7 +54,7 @@
                 <div class="page__editables">
                     <div class="page__editable page__editable--general" id="shared-kabas-general">
                         @foreach ($model->fields()->shared() as $key => $field)
-                        @unless($key == 'kabas' || $key == 'translated')
+                        @unless($key == 'kabas' || $key == 'translated' || $field->isTabbedGroup())
                             {!! $field->render('shared') !!}
                         @endif
                         @endforeach
@@ -74,10 +76,12 @@
                         <li class="page__group">
                             <a class="page__grouplink page__grouplink--general page__grouplink--current" href="#{{$locale}}-kabas-general">General</a>
                         </li>
-                    @foreach($model->fields()->tabbed() as $key => $group)
+                    @foreach($model->fields()->translated() as $key => $field)
+                    @if($field->isTabbedGroup())
                         <li class="page__group">
-                            <a class="page__grouplink" href="#{{$locale}}-{{ $key }}">{{ $group->label }}</a>
+                            <a class="page__grouplink" href="#{{$locale}}-{{ $key }}">{{ $field->label }}</a>
                         </li>
+                    @endif
                     @endforeach
                     </ul>
                 </div>
