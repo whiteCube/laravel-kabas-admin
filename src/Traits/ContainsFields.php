@@ -20,10 +20,6 @@ trait ContainsFields {
     {
         $fields = [];
         foreach ($structure as $key => $struct) {
-            if($key == 'translated') {
-                $fields = array_merge($fields, $this->createFields($struct));
-                continue;
-            }
             $fields[$key] = new Field($key, $struct);
         }
         return $fields;

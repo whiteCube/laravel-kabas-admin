@@ -54,7 +54,7 @@
                 <div class="page__editables">
                     <div class="page__editable page__editable--general" id="shared-kabas-general">
                         @foreach ($model->fields()->shared() as $key => $field)
-                        @unless($key == 'kabas' || $key == 'translated' || $field->isTabbedGroup())
+                        @unless($field->isTabbedGroup())
                             {!! $field->render('shared') !!}
                         @endif
                         @endforeach
