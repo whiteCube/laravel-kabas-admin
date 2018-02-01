@@ -31,8 +31,7 @@ class ModelsContainer extends BaseContainer
     {
         $this->sorted = $this->items;
         usort($this->sorted, function ($a, $b) {
-            // return strcmp($a->config()->name(), $b->config()->name());
-            return true;
+            return strcmp($a->config()->name(), $b->config()->name());
         });
     }
 
