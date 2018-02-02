@@ -2,6 +2,7 @@
 
 namespace WhiteCube\Admin\Request;
 
+use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class FileUploader {
@@ -35,30 +36,62 @@ class FileUploader {
      */
     public function upload()
     {
-        $this->recursivelyUploadFiles($this->request->files->all(), []);
+        $this->recursivelyUpload($this->request->all());
         return $this->fields;
     }
 
     /**
-     * Iterate through values and upload each file
-     * @param mixed $values
-     * @param array $path
+     * Process
+     * @param array $values
      * @return void
      */
-    protected function recursivelyUploadFiles($values, $path)
+    protected function recursivelyUpload($values)
     {
+        if(!is_array($values)) return;
         foreach ($values as $key => $value) {
-            $path[] = $key;
 
-            if (!$this->isFile($value)) {
-                $this->recursivelyUploadFiles($value, $path);
+            $isFile = $this->isFile($value);
+            $hasBase64 = $this->hasBase64($value);
+            
+            if(!$isFile && !$hasBase64 && is_array($value)) {
+                $this->recursivelyUpload($value);
                 continue;
             }
 
-            $name = $this->generateName($value);
-            $value->move(public_path('uploads/'), $name);
-            $this->replaceFileValue($path, $name);
+            if ($hasBase64) {
+                $old = $value;
+                $new = $this->uploadBase64($value);
+                $field = $this->setField($old, $this->fields, $new);
+            }
+
+            if ($isFile) {
+                $value->move(public_path('uploads/'), $name);
+                $name = $this->generateName($value->getClientOriginalExtension());
+                $this->replaceFileValue($path, $name);
+            }
+
         }
+    }
+
+    /**
+     * Overwrite a field's value
+     * @param mixed $needle
+     * @param array $haystack
+     * @param mixed $replace
+     * @return mixed
+     */
+    protected function setField($needle, &$haystack, $replace)
+    {
+        foreach ($haystack as $key => &$value) {
+            if(is_array($value)) {
+                $this->setField($needle, $value, $replace);
+                continue;
+            }
+            if($value == $needle) {
+                $value = $replace;
+            }
+        }
+        return false;
     }
 
     /**
@@ -72,13 +105,54 @@ class FileUploader {
     }
 
     /**
-     * Generate a hashed name
-     * @param UploadedFile $value
+     * Check if value contains a base64 encoded file
+     * @param string $value
+     * @return boolean
+     */
+    protected function hasBase64($value)
+    {
+        return strpos($value, ';base64,') !== false;
+    }
+
+    /**
+     * Undocumented function
+     * @param string $value
      * @return string
      */
-    protected function generateName($value)
+    protected function uploadBase64(&$value)
     {
-        return sha1(microtime()) . '.' . $value->getClientOriginalExtension();
+        preg_replace_callback('/url\(data:image\/.*\)/', function($matches) use (&$value) {
+            foreach ($matches as $key => $match) {
+                $name = $this->saveBase64File($match);
+                $value = str_replace($match, $name, $value);
+            }
+        }, $value);
+        return $value;
+    }
+
+    /**
+     * Write the base64 encoded file to disk
+     * @param [string] $data
+     * @return string
+     */
+    protected function saveBase64File($data)
+    {
+        $base64_str = substr($data, strpos($data, ",") + 1);
+        preg_match('/image\/(.[^;]*);/', $data, $extension);
+        $image = base64_decode($base64_str);
+        $name = 'uploads/' . $this->generateName($extension[1]);
+        file_put_contents(public_path() .'/'. $name, $image);
+        return $name;
+    }
+
+    /**
+     * Generate a hashed name
+     * @param string $extension
+     * @return string
+     */
+    protected function generateName($extension)
+    {
+        return sha1(microtime()) . '.' . $extension;
     }
 
     /**

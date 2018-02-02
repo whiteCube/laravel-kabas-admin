@@ -2,7 +2,11 @@
 
 namespace WhiteCube\Admin;
 
+use WhiteCube\Admin\Traits\Getters;
+
 class Value {
+
+    use Getters;
 
     /**
      * The raw value
@@ -70,7 +74,7 @@ class Value {
     protected function compute()
     {
         if($this->type == 'date') return $this->computeDate();
-        if($this->type == 'group') return $this->computeGroup();
+        if($this->type == 'group' || $this->type == 'flexible') return $this->computeGroup();
         return $this->raw;
     }
 
@@ -100,6 +104,7 @@ class Value {
      * @return array
      */
     protected function recursivelyReplacePaths($items) {
+        if (is_string($items)) return $items;
         foreach($items as $key => $value) {
             if ($key == 'path' && gettype($value) == 'string' && !str_contains('http', $value)) {
                 $items->$key = asset($value);

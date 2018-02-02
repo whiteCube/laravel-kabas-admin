@@ -42,7 +42,7 @@ trait ContainsFields {
      */
     public function get($key)
     {
-        return $this->items[$key];
+        return $this->items[$key] ?? null;
     }
 
     /**

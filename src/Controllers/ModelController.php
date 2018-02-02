@@ -3,6 +3,7 @@
 namespace WhiteCube\Admin\Controllers;
 
 use Carbon\Carbon;
+use WhiteCube\Admin\Value;
 use Illuminate\Http\Request;
 use WhiteCube\Admin\Facades\Admin;
 use WhiteCube\Admin\Request\Bag as RequestBag;
@@ -36,28 +37,48 @@ class ModelController extends BaseController
 
     public function process(Request $request)
     {
-        $requestbag = new RequestBag($request);
+        $bag = new RequestBag($request);
+        $bag->upload();
         $structure = str_replace('models/', '', $request->structure);
-        $model = Admin::model($structure);
-        $item = call_user_func($model->config->model . '::find', $request->id);
-        foreach ($requestbag->fields() as $key => $value) {
-            if (isset($model->fields->$key) && $model->fields->$key->type == 'date') {
-                $value = Carbon::createFromFormat('d F Y', $value);
-            }
-            if (in_array($key, Admin::locales())) {
-                $this->addTranslatedValues($item, $key, $value);
-            } else {
-                $item->$key = $value;
-            }
+        $model = Admin::models()->get($structure);
+
+        // TODO: Do not hardcode 'id' as the primary key,
+        // determine it in the json file instead.
+        $item = $model->find($request->id)->first();
+
+        foreach ($bag->fields() as $key => $value) {
+            $this->fill($model, $item, $key, $value);
         }
         $item->save();
         return  redirect()->route('kabas.admin.model.item', ['file' => $structure, 'id' => $item->id]);
     }
 
-    protected function addTranslatedValues($item, $locale, $values)
+    /**
+     * Update a model's value
+     * @param mixed $model
+     * @param mixed $item
+     * @param string $key
+     * @param mixed $value
+     * @return void
+     */
+    protected function fill($model, $item, $key, $value)
+    {
+        $field = $model->fields()->get($key);
+        if (in_array($key, Admin::locales())) {
+            $this->addTranslatedValues($model, $item, $key, $value);
+        } else {
+            $value = new Value($value, $field->type);
+            if($value->type() == 'date') $value->setRaw(Carbon::createFromFormat('d F Y', $value->get()));
+            $item->$key = $value->get();
+        }
+    }
+
+    protected function addTranslatedValues($model, $item, $locale, $values)
     {
         foreach ($values as $key => $value) {
-            $item->translateOrNew($locale)->$key = $value;
+            $field = $model->fields()->get($key);
+            $value = new Value($value, $field->type);
+            $item->translateOrNew($locale)->$key = $value->get();
         }
     }
 
