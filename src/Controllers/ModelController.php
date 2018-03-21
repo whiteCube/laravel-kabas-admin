@@ -112,9 +112,10 @@ class ModelController extends BaseController
 
     public function destroy($file, $id)
     {
-        $model = Admin::model($file);
-        $item = call_user_func($model->config->model . '::find', $id);
+        $model = Admin::models()->get($file);
+        $item = call_user_func($model->config()->model() . '::find', $id);
+        dd($item);
         $item->delete();
-        return redirect()->route('kabas.admin.model', ['file' => $model->file]);
+        return redirect()->route('kabas.admin.model', ['file' => $model->structure()->file()]);
     }
 }

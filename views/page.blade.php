@@ -16,7 +16,7 @@
         <div class="tabs">
             <div class="tabs__header">
                 <div class="tabs__dropdown">
-                @foreach(Admin::locales() as $i =>$lang)
+                @foreach(Admin::locales() as $i => $lang)
                     @if($i == 0)
                     <span class="tabs__toggle">
                         <a class="tabs__link tabs__link--active" data-target="{{ $lang }}">{{ $lang }}</a>
