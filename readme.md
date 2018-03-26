@@ -58,6 +58,7 @@ Here's an example of what it could contain:
   },
   "phonenumber": {
     "type": "text",
+    "readonly": true,
     "label": "Phone number"
   }
 }
