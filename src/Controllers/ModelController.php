@@ -5,19 +5,27 @@ namespace WhiteCube\Admin\Controllers;
 use Carbon\Carbon;
 use WhiteCube\Admin\Value;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use WhiteCube\Admin\Facades\Admin;
 use WhiteCube\Admin\Request\Bag as RequestBag;
 use Illuminate\Routing\Controller as BaseController;
 
 class ModelController extends BaseController
 {
-    public function list($route)
+    public function list($route, Request $request)
     {
         $model = Admin::models()->get($route);
-        if(request()->search) {
+
+        $items = $model;
+        
+        if($request->search) {
+            $sql = str_replace('%s', '%' . $request->search . '%', $model->structure()->search());
             // TODO: rechercher sur les colonnes qui sont dans "searchable" dans la structure
+            $items = new Collection(DB::select($sql));
+        } else {
+            $items = $model->all();
         }
-        $items = $model->all();
         return view('admin::models')->with([
             'model' => $model,
             'items' => $items
@@ -49,6 +57,7 @@ class ModelController extends BaseController
         foreach ($bag->fields() as $key => $value) {
             $this->fill($model, $item, $key, $value);
         }
+
         $item->save();
         return  redirect()->route('kabas.admin.model.item', ['file' => $structure, 'id' => $item->id]);
     }
@@ -84,38 +93,54 @@ class ModelController extends BaseController
 
     public function add($file)
     {
-        $model = Admin::model($file);
+        $model = Admin::models()->get($file);
+        $classname = $model->config()->model();
+        $instance = new $classname;
+        $translated = $instance->translatedAttributes;
+        $shared = array_diff(array_keys($model->fields()->all()), $instance->translatedAttributes);
+
         return view('admin::add-model')->with([
-            'model' => $model
+            'model' => $model, 
+            'instance' => new $classname,
+            'translated' => $translated,
+            'shared' => $shared 
         ]);
     }
 
     public function create($file, Request $request)
     {
-        $requestbag = new RequestBag($request);
-        $structure = str_replace('models/', '', $requestbag->structure());
-        $model = Admin::model($structure);
-        $item = new $model->config->model;
-        foreach ($requestbag->items() as $key => $value) {
-            if (isset($model->fields->$key) && $model->fields->$key->type == 'date') {
-                $value = Carbon::createFromFormat('d F Y', $value);
-            }
-            if (in_array($key, Admin::locales())) {
-                $this->addTranslatedValues($item, $key, $value);
-            } else {
-                $item->$key = $value;
-            }
+        $bag = new RequestBag($request);
+        $bag->upload();
+        $structure = str_replace('models/', '', $request->structure);
+        $model = Admin::models()->get($structure);
+
+        $classname = $model->config()->model();
+        $item = new $classname;
+
+        foreach ($bag->fields() as $key => $value) {
+            $this->fill($model, $item, $key, $value);
         }
         $item->save();
-        return  redirect()->route('kabas.admin.model.item', ['file' => $structure, 'id' => $item->id]);
+        return redirect()->route('kabas.admin.model.item', ['file' => $structure, 'id' => $item->id]);
+    }
+
+    public function del($file, $id)
+    {
+        $model = Admin::models()->get($file);
+        $item = $model->find($id)->first();
+        $model->fields()->fill($item);
+        return view('admin::modeldelete')->with([
+            'model' => $model,
+            'item' => $item
+        ]);
     }
 
     public function destroy($file, $id)
     {
         $model = Admin::models()->get($file);
         $item = call_user_func($model->config()->model() . '::find', $id);
-        dd($item);
         $item->delete();
-        return redirect()->route('kabas.admin.model', ['file' => $model->structure()->file()]);
+        $type = str_replace('.json', '', str_replace('models/', '', $model->structure()->file()));
+        return redirect()->route('kabas.admin.model', ['file' => $type]);
     }
 }

@@ -46,6 +46,15 @@ trait ContainsFields {
     }
 
     /**
+     * Get all fields
+     * @return array
+     */
+    public function all()
+    {
+        return $this->items;
+    }
+
+    /**
      * Set the value of a specific field
      * @param string $key
      * @param mixed $value

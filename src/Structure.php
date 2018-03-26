@@ -90,4 +90,13 @@ class Structure {
         return str_replace(['.json', 'customs/', 'models/'], '', $this->file);
     }
 
+    /**
+     * Returns the array of searchable fields
+     * @return array
+     */
+    public function search()
+    {
+        return $this->content->kabas->search_query ?? false;
+    }
+
 }

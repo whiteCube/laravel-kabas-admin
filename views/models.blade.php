@@ -6,7 +6,7 @@
             <h2 class="topbar__title">{{ $model->config()->name() }}</h2>
             <span class="topbar__counter">{{ $items->count() }}</span>
         </div>
-        <btn primary icon="pages" href="{{ route('kabas.admin.model.add', ['file' => $model->structure()->file()]) }}">New entry</btn>
+        <btn primary icon="pages" href="{{ route('kabas.admin.model.add', ['file' => $model->structure()->route()]) }}">New entry</btn>
         <searchbox action="#" placeholder="Search..." btntext="Search" name="search"></searchbox>
     </div>
     @if($items->count())
@@ -23,9 +23,8 @@
             <tablecell label="{{ $key }}">{{ $item->$key }}</tablecell>
             @endforeach
             <tablecell label="actions">
-                <form action="{{ route('kabas.admin.model.destroy', ['file' => $model->structure()->route(), 'id' => $item->id]) }}" method="POST">
+                <form action="{{ route('kabas.admin.model.delete', ['file' => $model->structure()->route(), 'id' => $item->id]) }}" method="POST">
                     {{ csrf_field() }}
-                    <input type="hidden" name="_method" value="DELETE">
                     <input type="submit" value="Delete">
                 </form>
             </tablecell>
