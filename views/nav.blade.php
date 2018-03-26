@@ -6,16 +6,18 @@
             {{ $custom->config()->name() }}
         </a>
     @endforeach
-    <em class="kabasnav__subtitle">Pages</em>
-    @foreach (Admin::pages()->sorted() as $page)
-        <a class="kabasnav__link {{ url()->current() == route('kabas.admin.page', ['file' => $page->route()]) ? 'kabasnav__link--active' : '' }}" href="{{ route('kabas.admin.page', ['file' => $page->route()]) }}">
-            {{ $page->config()->name() }}
-        </a>
-    @endforeach
+    
     <em class="kabasnav__subtitle">Modèles</em>
     @foreach (Admin::models()->sorted() as $model)
         <a class="kabasnav__link {{ url()->current() == route('kabas.admin.model', ['file' => $model->structure()->route()]) ? 'kabasnav__link--active' : '' }}" href="{{ route('kabas.admin.model', ['file' => $model->structure()->route()]) }}">
             {{ $model->config()->name() }}
+        </a>
+    @endforeach
+
+    <em class="kabasnav__subtitle">Pages</em>
+    @foreach (Admin::pages()->sorted() as $page)
+        <a class="kabasnav__link {{ url()->current() == route('kabas.admin.page', ['file' => $page->route()]) ? 'kabasnav__link--active' : '' }}" href="{{ route('kabas.admin.page', ['file' => $page->route()]) }}">
+            {{ $page->config()->name() }}
         </a>
     @endforeach
 </nav>
