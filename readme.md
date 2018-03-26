@@ -142,3 +142,20 @@ When we call your method, we will give it two parameters:
 **Important**: a `"show"` method must return html. This is what we use to insert your field into the page.
 
 To add styles and scripts for your fields, check out the `config/kabas-admin.php` file, where you can link as many `.css` and `.js` files as you need.
+
+## Custom pages
+You can also have completely custom pages.  
+The structure for these must be placed in a `customs`directory within the `structures`folder.
+
+These are really simple:
+```json
+{
+    "kabas": {
+        "name": "My custom page",
+        "controller": "App\\Http\\Controllers\\Admin\\MyCustomPageController"
+    }
+}
+```
+
+The system will create an instance of your controller and then call a `render` method on it, which must return a view. You can simply use Laravel's `view()` function to do this.  
+Please note that your view does not need to contain a header/sidebar, as your view will be integrated in the default kabas admin layout automatically.
