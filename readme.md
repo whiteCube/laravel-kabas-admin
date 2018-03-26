@@ -64,7 +64,7 @@ Here's an example of what it could contain:
 ```
 
 **Let's go through this.**  
-The first entry, with the key `"kabas"`, is used to store some general configuration for the page. It must contain a `"name"` which will be displayed in the navigation links and such, and `"icon"` is used to show a beautiful decorative icon on the page's card. You can find a list of available icons [here](./icons.png).
+The first entry, with the key `"kabas"`, is used to store some general configuration for the page. It must contain a `"name"` which will be displayed in the navigation links, and `"icon"` is used to show a beautiful decorative icon on the page's card. You can find a list of available icons [here](./icons.png).
 > Please note: you must reference the name of the icon without the `.svg` extension.
 You must also have a "meta" key containing fields that represent the meta tags you need on this page.
 
@@ -110,7 +110,15 @@ The `name` key will be used in the admin navigation links.
 The `model` key must be a reference to the full class name (including namespace) of your model.  
 
 The `columns` object lets you define which data is displayed when we are listing your models in a table. Say you click on the "News" link in the sidebar, the system will show you a table with your `App\Post` items, but we need to tell it how to display that data.  
-The key of each entry within this object must correspond to the name of the corresponding column in the database. Then, we can give it a human-friendly title, and say whether it's the main column or not (the main column will be all the way on the left and take up more space than the other columns).
+The key of each entry within this object must correspond to the name of the corresponding column in the database. Then, we can give it a human-friendly title, and say whether it's the main column or not (the main column will be all the way on the left and take up more space than the other columns).  
+If you want to display a value from a relation, you may do it like so:
+```json
+"user_id": {
+    "title": "User",
+    "references": "App\\User@id",
+    "column": "firstname"
+}
+```
 
 Lastly, if we want our model to be searchable, we can provide a `search_query` raw sql string, where every `%s` will be replaced with what the user wrote in the search box.
 If we do not want a search box on our model, simply do not include the `search_query` key.
@@ -157,5 +165,26 @@ These are really simple:
 }
 ```
 
+```php
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+
+class MyCustomPageController extends Controller
+{
+    public function __construct()
+    {
+        // Do any setup stuff you need before render() is called
+    }
+
+    public function render()
+    {
+        return view(...);
+    }
+}
+```
+
 The system will create an instance of your controller and then call a `render` method on it, which must return a view. You can simply use Laravel's `view()` function to do this.  
-Please note that your view does not need to contain a header/sidebar, as your view will be integrated in the default kabas admin layout automatically.
+Please note that your view does not need to contain a header/sidebar, as it will be integrated in the default kabas admin layout automatically.
