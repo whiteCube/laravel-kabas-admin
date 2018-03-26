@@ -44,7 +44,13 @@ Here's an example of what it could contain:
 {
   "kabas": {
     "name": "Contact",
-    "icon": "contact"
+    "icon": "contact",
+    "meta": {
+      "description": { 
+        "type": "textarea"
+        ...
+      }
+    }
   },
   "introduction": {
     "type": "wysiwyg",
@@ -60,13 +66,56 @@ Here's an example of what it could contain:
 **Let's go through this.**  
 The first entry, with the key `"kabas"`, is used to store some general configuration for the page. It must contain a `"name"` which will be displayed in the navigation links and such, and `"icon"` is used to show a beautiful decorative icon on the page's card. You can find a list of available icons [here](./icons.png).
 > Please note: you must reference the name of the icon without the `.svg` extension.
+You must also have a "meta" key containing fields that represent the meta tags you need on this page.
 
 The other entries are a list of the fields you wish to have for the page. Each is an object that must contain at least a `"type"` and a `"label"`. The type must refer to one of the available field types, and the label is the text that is displayed above the field.  
 Here is a [reference of all the supported field types and their respective configuration json](https://kabas.io/fieldtypes/).
 
 ## Models
 
-Todo
+Models work in a similar way to pages, but their structure files must be placed within a `models` directory inside the `structure` folder. The name of the file does not matter much in this case, as you will define which model this file corresponds to from within the json data.
+
+Here's an example structure for a `App\Post` model:
+```json
+{
+    "kabas": {
+        "name": "News",
+        "model": "App\\Post",
+        "columns": {
+            "title": {
+                "title": "title",
+                "main": true
+            },
+            "updated_at": {
+                "title":  "Last modified"
+            }
+        },
+        "search_query": "SELECT * FROM posts INNER JOIN post_translations ON posts.id = post_translations.post_id WHERE post_translations.title LIKE '%s'"
+    },
+    "title": {
+        "label": "Title",
+        "type": "text"
+    },
+    "content": {
+        "label": "Text content",
+        "type": "wysiwyg",
+    }
+}
+```
+
+As with pages, general configuration is done within the `kabas` object.
+
+The `name` key will be used in the admin navigation links. 
+
+The `model` key must be a reference to the full class name (including namespace) of your model.  
+
+The `columns` object lets you define which data is displayed when we are listing your models in a table. Say you click on the "News" link in the sidebar, the system will show you a table with your `App\Post` items, but we need to tell it how to display that data.  
+The key of each entry within this object must correspond to the name of the corresponding column in the database. Then, we can give it a human-friendly title, and say whether it's the main column or not (the main column will be all the way on the left and take up more space than the other columns).
+
+Lastly, if we want our model to be searchable, we can provide a `search_query` raw sql string, where every `%s` will be replaced with what the user wrote in the search box.
+If we do not want a search box on our model, simply do not include the `search_query` key.
+
+And then, define your fields as you would on a page (see above).
 
 ## Creating custom fields
 
