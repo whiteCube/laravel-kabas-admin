@@ -8,6 +8,7 @@ class Field
     public $type;
     public $label;
     public $description;
+    public $reference;
     public $structure;
 
     /**
@@ -19,9 +20,9 @@ class Field
     {
         $this->key = $key;
         $this->structure = $structure;
-        $this->label = $this->structure->label;
+        $this->label = $this->structure->label ?? null;
         $this->description = $this->structure->description ?? null;
-        $this->type = $this->structure->type;
+        $this->type = $this->structure->type ?? 'custom';
     }
 
     /**

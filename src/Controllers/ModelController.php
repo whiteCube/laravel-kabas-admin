@@ -26,10 +26,32 @@ class ModelController extends BaseController
         } else {
             $items = $model->all();
         }
+
+        $items = $this->getRelatedData($model, $items);
+
         return view('admin::models')->with([
             'model' => $model,
             'items' => $items
         ]);
+    }
+
+    public function getRelatedData($model, $items)
+    {
+        foreach($model->config()->columns() as $key => $column) {
+            if(!isset($column->references)) continue;
+
+            foreach($items as $item) {
+                $parts = explode('@', $column->references);
+                $classname = $parts[0];
+                $col = $parts[1];
+                $related = call_user_func($classname . '::find', $item->$key);
+                $relatedColumn = $column->column;
+                $item->$key = $related->$relatedColumn;
+            }
+        
+        }
+
+        return $items;
     }
 
     public function show($route, $id)
