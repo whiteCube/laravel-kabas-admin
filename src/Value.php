@@ -3,6 +3,7 @@
 namespace WhiteCube\Admin;
 
 use WhiteCube\Admin\Traits\Getters;
+use Carbon\Carbon;
 
 class Value {
 
@@ -74,6 +75,7 @@ class Value {
     protected function compute()
     {
         if($this->type == 'date') return $this->computeDate();
+        if($this->type == 'text' && $this->raw instanceof Carbon) return $this->value = (string) $this->raw;
         if($this->type == 'group' || $this->type == 'flexible') return $this->computeGroup();
         return $this->raw;
     }

@@ -6,7 +6,7 @@ trait Getters {
 
     public function __call($name, $args)
     {
-        return $this->$name;
+        return $this->$name ?? null;
     }
 
 }

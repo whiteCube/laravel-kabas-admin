@@ -118,8 +118,8 @@ class ModelController extends BaseController
         $model = Admin::models()->get($file);
         $classname = $model->config()->model();
         $instance = new $classname;
-        $translated = $instance->translatedAttributes;
-        $shared = array_diff(array_keys($model->fields()->all()), $instance->translatedAttributes);
+        $translated = $instance->translatedAttributes ?? [];
+        $shared = array_diff(array_keys($model->fields()->all()), $instance->translatedAttributes ?? []);
 
         return view('admin::add-model')->with([
             'model' => $model, 

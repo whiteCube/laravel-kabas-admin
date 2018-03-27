@@ -6,7 +6,9 @@
             <h2 class="topbar__title">{{ $model->config()->name() }}</h2>
             <span class="topbar__counter">{{ $items->count() }}</span>
         </div>
+        @if(null === ($model->config()->createButton()) || $model->config()->createButton())
         <btn primary icon="pages" href="{{ route('kabas.admin.model.add', ['file' => $model->structure()->route()]) }}">New entry</btn>
+        @endif
         @if($model->structure()->search())
         <searchbox action="#" placeholder="Search..." btntext="Search" name="search"></searchbox>
         @endif

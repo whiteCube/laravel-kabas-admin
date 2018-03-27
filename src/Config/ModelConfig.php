@@ -26,6 +26,12 @@ class ModelConfig {
     protected $columns;
 
     /**
+     * Should we show the create button on the list page
+     * @var bool
+     */
+    protected $createButton;
+
+    /**
      * Create an instance
      * @param object $structure
      */
@@ -34,6 +40,7 @@ class ModelConfig {
         $this->name = $structure->name;
         $this->model = $structure->model;
         $this->columns = $structure->columns;
+        $this->createButton = $structure->createButton ?? null;
     }
 
 }
