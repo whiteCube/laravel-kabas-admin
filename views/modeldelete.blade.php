@@ -15,7 +15,6 @@
         <input name="id" type="hidden" value="{{ $item->id }}">
         
         <p>Are you sure you want to delete this model?</p>
-        {{--  {{ dump($item) }}  --}}
 
         <button class="submit" type="submit">Delete</button>
 
