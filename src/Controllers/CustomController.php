@@ -12,10 +12,13 @@ class CustomController extends BaseController {
      * @param string $route
      * @return View
      */
-    public function show($route)
+    public function show($route, $params = [])
     {
+        if(is_string($params)) {
+            $params = explode('/', $params);
+        }
         $custom = Admin::customs()->get($route);
-        $custom->run();
+        $custom->run($params);
         return view('admin::custom')->with([
             'custom' => $custom
         ]);

@@ -20,13 +20,28 @@ class CustomConfig {
     protected $controller;
 
     /**
+     * The method to call on the class
+     * @var string
+     */
+    protected $method;
+
+    /**
+     * Should we display this custom in the nav
+     * @var bool
+     */
+    protected $nav;
+
+    /**
      * Create an instance
      * @param object $structure
      */
     public function __construct($structure)
     {
         $this->name = $structure->name;
-        $this->controller = $structure->controller;
+        $parts = explode('@', $structure->controller);
+        $this->controller = $parts[0];
+        $this->method = $parts[1] ?? 'render';
+        $this->nav = $structure->nav ?? true;
     }
 
 }

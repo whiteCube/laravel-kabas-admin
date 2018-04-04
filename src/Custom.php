@@ -49,11 +49,12 @@ class Custom {
      * Run the user's class
      * @return void
      */
-    public function run()
+    public function run($params)
     {
         $name = $this->config()->controller();
-        $controller = new $name;
-        $this->output = $controller->render();
+        $controller = new $name($params);
+        $method = $this->config->method();
+        $this->output = $controller->$method();
     }
 
 }
