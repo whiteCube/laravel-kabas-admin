@@ -46,7 +46,7 @@ class ModelController extends BaseController
                 $col = $parts[1];
                 $related = call_user_func($classname . '::find', $item->$key);
                 $relatedColumn = $column->column;
-                $item->$key = $related->$relatedColumn;
+                $item->$key = $related->$relatedColumn ?? '';
             }
         
         }
