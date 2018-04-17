@@ -24,4 +24,13 @@ class CustomController extends BaseController {
         ]);
     }
 
+    public function post($route, $params = [])
+    {
+        if (is_string($params)) {
+            $params = explode('/', $params);
+        }
+        $custom = Admin::customs()->get($route);
+        return $custom->run($params);
+    }
+
 }

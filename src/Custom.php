@@ -55,6 +55,7 @@ class Custom {
         $controller = new $name($params);
         $method = $this->config->method();
         $this->output = $controller->$method();
+        return $this->output;
     }
 
 }
