@@ -98,8 +98,13 @@ class ModelController extends BaseController
         if (in_array($key, Admin::locales())) {
             $this->addTranslatedValues($model, $item, $key, $value);
         } else {
+            $raw = $value;
             $value = new Value($value, $field->type);
-            if($value->type() == 'date') $value->setRaw(Carbon::createFromFormat('d F Y', $value->get()));
+            if($value->type() == 'date' && !$value->empty()) $value->setRaw(Carbon::createFromFormat('d F Y - H:i', $raw));
+            if($value->type() == 'checkbox') {
+                if($value->get() == '1') $value->setRaw(true);
+                else $value->setRaw(false);
+            } 
             $item->$key = $value->get();
         }
     }
@@ -142,6 +147,7 @@ class ModelController extends BaseController
         foreach ($bag->fields() as $key => $value) {
             $this->fill($model, $item, $key, $value);
         }
+
         $item->save();
         return redirect()->route('kabas.admin.model.item', ['file' => $structure, 'id' => $item->id]);
     }

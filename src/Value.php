@@ -119,4 +119,9 @@ class Value {
         return $items;
     }
 
+    public function empty()
+    {
+        return !is_null($this->value);
+    }
+
 }
