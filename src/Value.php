@@ -86,6 +86,7 @@ class Value {
      */
     protected function computeDate()
     {
+        if(is_null($this->raw)) return null;
         return (string) $this->raw;
     }
 
@@ -121,7 +122,7 @@ class Value {
 
     public function empty()
     {
-        return !is_null($this->value);
+        return is_null($this->raw);
     }
 
 }

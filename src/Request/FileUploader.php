@@ -111,6 +111,7 @@ class FileUploader {
      */
     protected function hasBase64($value)
     {
+        if(is_array($value)) return;
         return strpos($value, ';base64,') !== false;
     }
 

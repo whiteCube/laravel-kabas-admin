@@ -10,7 +10,7 @@
         <btn primary icon="pages" href="{{ route('kabas.admin.model.add', ['file' => $model->structure()->route()]) }}">New entry</btn>
         @endif
         @if($model->structure()->search())
-        <searchbox action="#" placeholder="Search..." btntext="Search" name="search"></searchbox>
+        <searchbox action="#" placeholder="Search..." btntext="Search" value="{{ request()->search }}" name="search"></searchbox>
         @endif
     </div>
     @if($items->count())

@@ -21,8 +21,7 @@ class ModelController extends BaseController
         
         if($request->search) {
             $sql = str_replace('%s', '%' . $request->search . '%', $model->structure()->search());
-            // TODO: rechercher sur les colonnes qui sont dans "searchable" dans la structure
-            $items = new Collection(DB::select($sql));
+            $items = call_user_func($model->config()->model() . '::hydrate', DB::select($sql));
         } else {
             $items = $model->all();
         }
@@ -100,11 +99,24 @@ class ModelController extends BaseController
         } else {
             $raw = $value;
             $value = new Value($value, $field->type);
-            if($value->type() == 'date' && !$value->empty()) $value->setRaw(Carbon::createFromFormat('d F Y - H:i', $raw));
+
+            if($value->type() == 'date') {
+                if(!$value->empty()) {
+                    $value->setRaw(Carbon::createFromFormat('d/m/Y - H:i', $raw));
+                } else {
+                    $value->setRaw(null);
+                }
+            }
+            
             if($value->type() == 'checkbox') {
                 if($value->get() == '1') $value->setRaw(true);
                 else $value->setRaw(false);
             } 
+
+            if($value->type() == 'model') {
+                return $item->$key()->sync($value->get());
+            }
+
             $item->$key = $value->get();
         }
     }
