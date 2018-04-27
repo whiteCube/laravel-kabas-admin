@@ -75,6 +75,10 @@ class Field
 
         $value = $this->value($locale);
 
+        if($this->type == 'model') {
+            $this->morphToSelect();
+        }
+
         return '<genericfield 
                     name="' . $this->name($locale) . '" 
                     description="'. $this->description .'"
@@ -153,6 +157,23 @@ class Field
         $name = $locale . '|' . $this->key;
         if ($locale == 'shared') $name = $this->key;
         return $name;
+    }
+
+    protected function morphToSelect()
+    {
+        $this->structure->type = 'select';
+        $this->structure->options = [];
+
+        foreach (call_user_func($this->structure->model . '::all') as $model) {
+            $label = $this->structure->column;
+            $this->structure->options[$model->id] = $model->$label;
+        }
+
+        $items = [];
+        foreach ($this->values['shared']->get() as $value) {
+            array_push($items, '' . $value->id);
+        }
+        $this->values['shared']->setRaw($items);
     }
 
 }
