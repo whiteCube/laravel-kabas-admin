@@ -68,7 +68,7 @@ class Field
         if (isset($this->structure->controllers->show)) {
             return $this->callUserShowMethod($locale);
         }
-        
+
         if ($this->isNestable() && isset($this->structure->options)) {
             $this->prefixSubfields($this->structure->options, $locale, $this->key);
         }
@@ -134,7 +134,6 @@ class Field
 
     public function isTranslated()
     {
-        dd($this->values);
         return '';
     }
 
@@ -169,11 +168,19 @@ class Field
             $this->structure->options[$model->id] = $model->$label;
         }
 
+        if(!count($this->values)) return;
+
         $items = [];
-        foreach ($this->values['shared']->get() as $value) {
-            array_push($items, '' . $value->id);
+
+        if ($this->structure->multiple) {
+            foreach ($this->values['shared']->get() ?? [] as $value) {
+                array_push($items, '' . $value->id);
+            }
+            $this->values['shared']->setRaw($items);
+        } else {
+            $this->values['shared']->setRaw($this->values['shared']->get()->id);
         }
-        $this->values['shared']->setRaw($items);
+
     }
 
 }

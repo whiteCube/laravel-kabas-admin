@@ -2,6 +2,7 @@
 
 namespace WhiteCube\Admin;
 
+use Exception;
 use Carbon\Carbon;
 use WhiteCube\Admin\Traits\Getters;
 use WhiteCube\Admin\Config\CustomConfig;

@@ -114,7 +114,12 @@ class ModelController extends BaseController
             } 
 
             if($value->type() == 'model') {
-                return $item->$key()->sync($value->get());
+                if($field->structure->multiple) {
+                    return $item->$key()->sync($value->get());
+                } else {
+                    dump($item->$key());
+                    return $item->$key()->associate($value->get());
+                }
             }
 
             $item->$key = $value->get();
