@@ -94,6 +94,7 @@ class ModelController extends BaseController
     protected function fill($model, $item, $key, $value)
     {
         $field = $model->fields()->get($key);
+
         if (in_array($key, Admin::locales())) {
             $this->addTranslatedValues($model, $item, $key, $value);
         } else {
@@ -114,10 +115,10 @@ class ModelController extends BaseController
             } 
 
             if($value->type() == 'model') {
-                if($field->structure->multiple) {
+                $relation = class_basename($item->$key());
+                if($relation == 'BelongsToMany') {
                     return $item->$key()->sync($value->get());
-                } else {
-                    dump($item->$key());
+                } else if($relation == 'BelongsTo') {
                     return $item->$key()->associate($value->get());
                 }
             }
