@@ -178,7 +178,9 @@ class Field
             }
             $this->values['shared']->setRaw($items);
         } else {
-            $this->values['shared']->setRaw($this->values['shared']->get()->id);
+            if($model = $this->values['shared']->get()) {
+                $this->values['shared']->setRaw($model->id);
+            }
         }
 
     }
