@@ -7,7 +7,7 @@
         <a href="{{ route('kabas.admin.model', ['file' => $model->structure()->file()]) }}" class="topbar__link link">Back to list</a>
     </div>
 
-    <form class="page__form" method="POST" action="{{ route('kabas.admin.model.create', ['file' => $model->structure()->route()]) }}">
+    <form class="page__form" enctype="multipart/form-data" method="POST" action="{{ route('kabas.admin.model.create', ['file' => $model->structure()->route()]) }}">
         {{ csrf_field() }}
         <input name="structure" type="hidden" value="{{ $model->structure()->route() }}">
         <div class="tabs">

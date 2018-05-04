@@ -8,7 +8,7 @@
         <a href="{{ route('kabas.admin.model', ['route' => $model->structure()->route()]) }}" class="topbar__link link">Back to list</a>
     </div>
 
-    <form class="page__form" method="POST" action="{{ route('kabas.admin.model.submit') }}">
+    <form class="page__form" enctype="multipart/form-data" method="POST" action="{{ route('kabas.admin.model.submit') }}">
         {{ csrf_field() }}
         <input name="structure" type="hidden" value="{{ $model->structure()->route() }}">
         <input name="id" type="hidden" value="{{ $item->id }}">

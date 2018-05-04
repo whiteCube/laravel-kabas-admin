@@ -98,6 +98,14 @@ class ModelController extends BaseController
         if (in_array($key, Admin::locales())) {
             $this->addTranslatedValues($model, $item, $key, $value);
         } else {
+
+            if ($field->type == 'image' || $field->type == 'file') {
+                if (isset($value['file']) && $file = $value['file']) {
+                    $path = $file->store('uploads', 'public');
+                    $value['path'] = $path;
+                }
+            }
+
             $raw = $value;
             $value = new Value($value, $field->type);
 
@@ -116,11 +124,27 @@ class ModelController extends BaseController
 
             if($value->type() == 'model') {
                 $relation = class_basename($item->$key());
+
+
                 if($relation == 'BelongsToMany') {
                     return $item->$key()->sync($value->get());
                 } else if($relation == 'BelongsTo') {
                     return $item->$key()->associate($value->get());
+                } else if($relation == 'HasOne' || $relation == 'HasMany') {
+                    if(count($item->$key)) {
+                        $item->$key->each(function($rel) use ($item, $field) {
+                            $rel->{$field->structure->foreign} = null;
+                            $rel->save();
+                        });
+                    }
+
+                    $related = call_user_func($field->structure->model . '::find', $value->get());
+                    return $item->$key()->save($related);
                 }
+            }
+
+            if($value->type() == 'image' || $value->type() == 'file') {
+                $value->setRaw(json_encode($value->get()));
             }
 
             $item->$key = $value->get();
@@ -167,6 +191,7 @@ class ModelController extends BaseController
         }
 
         $item->save();
+
         return redirect()->route('kabas.admin.model.item', ['file' => $structure, 'id' => $item->id]);
     }
 

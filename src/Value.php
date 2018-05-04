@@ -75,6 +75,7 @@ class Value {
     protected function compute()
     {
         if($this->type == 'date') return $this->computeDate();
+        if($this->type == 'image') return $this->computeImage();
         if($this->type == 'text' && $this->raw instanceof Carbon) return $this->value = (string) $this->raw;
         if($this->type == 'group' || $this->type == 'flexible') return $this->computeGroup();
         return $this->raw;
@@ -88,6 +89,20 @@ class Value {
     {
         if(is_null($this->raw)) return null;
         return (string) $this->raw;
+    }
+
+    /**
+     * Process an image value
+     * @return string
+     */
+    protected function computeImage()
+    {
+        if(is_string($this->raw)) {
+            $data = json_decode($this->raw);
+            $data->path = asset($data->path);
+            return $data;
+        }
+        return $this->raw;
     }
 
     /**
