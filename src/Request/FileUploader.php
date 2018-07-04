@@ -65,7 +65,7 @@ class FileUploader {
             }
 
             if ($isFile) {
-                $value->move(public_path('uploads/'), $name);
+                $value->move(public_path('storage/uploads/'), $name);
                 $name = $this->generateName($value->getClientOriginalExtension());
                 $this->replaceFileValue($path, $name);
             }
@@ -141,7 +141,7 @@ class FileUploader {
         $base64_str = substr($data, strpos($data, ",") + 1);
         preg_match('/image\/(.[^;]*);/', $data, $extension);
         $image = base64_decode($base64_str);
-        $name = 'uploads/' . $this->generateName($extension[1]);
+        $name = 'storage/uploads/' . $this->generateName($extension[1]);
         file_put_contents(public_path() .'/'. $name, $image);
         return $name;
     }
@@ -190,7 +190,7 @@ class FileUploader {
             }
         }
 
-        $item = (object) ['path' => 'uploads/' . $name, 'alt' => $alt];
+        $item = (object) ['path' => 'storage/uploads/' . $name, 'alt' => $alt];
     }
 
 }
