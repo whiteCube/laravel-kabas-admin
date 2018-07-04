@@ -107,7 +107,7 @@ trait ContainsFields {
             } else {
                 foreach (Admin::locales() as $locale) {
                     $this->translated[] = $key;
-                    $field->setValue($model->translate($locale)->$key, $locale);
+                    $field->setValue($model->translate($locale)->$key ?? '', $locale);
                 }
             }
         }
