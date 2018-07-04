@@ -8,6 +8,12 @@
         <a href="{{ route('kabas.admin.model', ['route' => $model->structure()->route()]) }}" class="topbar__link link">Back to list</a>
     </div>
 
+    @if($errors->any())
+    <div class="errorbox">
+        Il y a des erreurs. Veuillez vérifier les données et soumettre le formulaire à nouveau.
+    </div>
+    @endif
+
     <form class="page__form" enctype="multipart/form-data" method="POST" action="{{ route('kabas.admin.model.submit') }}">
         {{ csrf_field() }}
         <input name="structure" type="hidden" value="{{ $model->structure()->route() }}">
@@ -54,6 +60,11 @@
                 <div class="page__editables">
                     <div class="page__editable page__editable--general" id="shared-kabas-general">
                         @foreach ($model->fields()->shared() as $key => $field)
+                        @if($errors->has($key))
+                        @php
+                        $field->addError($errors->first($key));
+                        @endphp
+                        @endif
                         @unless($field->isTabbedGroup())
                             {!! $field->render('shared') !!}
                         @endif
@@ -89,10 +100,20 @@
                 <div class="page__editables">
                     <div class="page__editable page__editable--general" id="{{$locale}}-kabas-general">
                         @foreach ($model->fields()->translated() as $key => $field)
+                            @if($errors->has($locale . '|' . $key))
+                            @php
+                            $field->addError($errors->first($locale . '|' . $key));
+                            @endphp
+                            @endif
                             {!! $field->render($locale) !!}
                         @endforeach
                     </div>
                     @foreach($model->fields()->tabbed() as $key => $group)
+                    @if($errors->has($locale . '|' . $key))
+                    @php
+                    $group->addError($errors->first($locale . '|' . $key));
+                    @endphp
+                    @endif
                     <div class="page__editable page__editable--hidden" id="{{$locale}}-{{ $key }}">
                         {!! $group->render($locale) !!}
                     </div>

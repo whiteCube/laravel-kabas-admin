@@ -182,7 +182,11 @@ class Field
                 $this->values['shared']->setRaw($model->id);
             }
         }
+    }
 
+    public function addError($message)
+    {
+        $this->structure->error = $message;
     }
 
 }

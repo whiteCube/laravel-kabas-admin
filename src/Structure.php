@@ -3,6 +3,7 @@
 namespace WhiteCube\Admin;
 
 use WhiteCube\Admin\Traits\Getters;
+use WhiteCube\Admin\Facades\Admin;
 
 class Structure {
 
@@ -97,6 +98,18 @@ class Structure {
     public function search()
     {
         return $this->content->kabas->search_query ?? false;
+    }
+
+    public function validation()
+    {
+        $rules = [];
+        foreach(Admin::locales() as $locale) {
+            foreach($this->fields() as $key => $field) {
+                if(!isset($field->validation)) continue;
+                $rules[$locale . '|' . $key] = $field->validation;
+            }
+        }
+        return $rules;
     }
 
 }

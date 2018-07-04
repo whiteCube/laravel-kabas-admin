@@ -9,7 +9,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use WhiteCube\Admin\Facades\Admin;
 use WhiteCube\Admin\Request\Bag as RequestBag;
-use Illuminate\Routing\Controller as BaseController;
+use App\Http\Controllers\Controller as BaseController;
 
 class ModelController extends BaseController
 {
@@ -71,9 +71,12 @@ class ModelController extends BaseController
         $structure = str_replace('models/', '', $request->structure);
         $model = Admin::models()->get($structure);
 
+        $this->runValidation($model->structure()->validation(), $request);
+        
         // TODO: Do not hardcode 'id' as the primary key,
         // determine it in the json file instead.
         $item = $model->find($request->id)->first();
+
 
         foreach ($bag->fields() as $key => $value) {
             $this->fill($model, $item, $key, $value);
@@ -186,6 +189,8 @@ class ModelController extends BaseController
         $classname = $model->config()->model();
         $item = new $classname;
 
+        $this->runValidation($model->structure()->validation(), $request);
+
         foreach ($bag->fields() as $key => $value) {
             $this->fill($model, $item, $key, $value);
         }
@@ -213,5 +218,10 @@ class ModelController extends BaseController
         $item->delete();
         $type = str_replace('.json', '', str_replace('models/', '', $model->structure()->file()));
         return redirect()->route('kabas.admin.model', ['file' => $type]);
+    }
+
+    public function runValidation($rules, $data)
+    {
+        $this->validate($data, $rules);
     }
 }

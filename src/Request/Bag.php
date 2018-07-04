@@ -156,4 +156,13 @@ class Bag
         $this->fields = $this->uploader->upload();
     }
 
+    /**
+     * Get the raw request dara
+     * @return array
+     */
+    public function raw()
+    {
+        return $this->raw;
+    }
+
 }
