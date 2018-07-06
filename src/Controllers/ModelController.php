@@ -105,7 +105,7 @@ class ModelController extends BaseController
             if ($field->type == 'image' || $field->type == 'file') {
                 if (isset($value['file']) && $file = $value['file']) {
                     $path = $file->store('uploads', 'public');
-                    $value['path'] = $path;
+                    $value['path'] = 'storage/' . $path;
                 }
             }
 
