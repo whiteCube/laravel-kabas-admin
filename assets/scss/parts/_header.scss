@@ -2,12 +2,13 @@
     position: relative;
     background: $cAnthracite4;
     height: s(210);
+    padding-top: s(15);
 
     &:before {
         content: '';
         display: block;
         @include cover();
-        background: url('../../img/waves.svg');
+        background: url('../img/waves.svg');
         background-repeat: repeat-x;
         background-position: bottom left;
         background-size: 1622px;
@@ -17,12 +18,12 @@
         content: '';
         display: block;
         @include cover();
-        background-image: url('../../img/noise.png');
+        background-image: url('../img/noise.png');
         background-repeat: repeat;
     }
 
     &__bottom {
-        background-image: url('../../img/header-bottom.svg');
+        background-image: url('../img/header-bottom.svg');
         background-repeat: no-repeat;
         background-size: 100%;
         background-position: bottom center;
@@ -32,5 +33,40 @@
         right: 0;
         top: 0;
         margin: auto;
+    }
+
+    &__branding {
+        display: block;
+        width: s(140);
+        position: relative;
+        z-index: 2;
+    }
+
+    &__logo {
+        width: 100%;
+        display: block;
+        float: left;
+    }
+
+    &__right {
+        position: relative;
+        z-index: 10;
+        float: right;
+    }
+
+    &__logout {
+        margin-top: s(17, $s3);
+        border: none;
+        background: transparent;
+        color: $cWhite;
+        font-size: s($s3);
+        cursor: pointer;
+        padding: 0;
+        transition: color 200ms $ease-out-quad;
+
+        &:hover,
+        &:focus {
+            color: $cWhite5;
+        }
     }
 }

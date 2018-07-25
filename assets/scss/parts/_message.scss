@@ -1,0 +1,18 @@
+.message {
+    text-align: center;
+    padding: s(80);
+
+    &__illu {
+        width: s(300);
+        margin: 0 auto;
+
+        svg {
+            width: 100%;
+            height: auto;
+        }
+    }
+
+    &__text {
+        font-weight: 700;
+    }
+}

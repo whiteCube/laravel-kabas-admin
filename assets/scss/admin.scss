@@ -6,3 +6,23 @@
 @import "parts/topbar";
 @import "parts/header";
 @import "parts/fields";
+@import "parts/vouchershistory";
+@import "parts/message";
+@import "parts/batch";
+@import "parts/houses";
+@import "parts/table";
+@import "parts/errorbox";
+
+.clearfix {
+    @include clearfix();
+}
+
+h3 {
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-bottom: 1em;
+}
+
+strong {
+    font-weight: bold;
+}

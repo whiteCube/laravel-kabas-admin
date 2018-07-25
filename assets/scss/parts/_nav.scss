@@ -13,9 +13,9 @@
     &__subtitle {
         text-transform: uppercase;
         font-weight: 700;
-        letter-spacing: s(2, $s2);
+        letter-spacing: s(1, $s2);
         padding: s(10, $s2) s(25, $s2) s(10, $s2) 0;
-        margin-top: s(15, $s2);
+        margin-top: s(35, $s2);
         font-size: s($s2);
         display: inline-block;
     }

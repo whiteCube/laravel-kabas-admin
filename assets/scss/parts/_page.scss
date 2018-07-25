@@ -1,4 +1,6 @@
 .page {
+    position: relative;
+    
     &__shared {
         margin-bottom: s(50);
     }
@@ -10,7 +12,6 @@
     }
 
     &__editables {
-        padding-top: s(53);
         float: left;
     }
 
@@ -20,8 +21,8 @@
     }
 
     &__submit {
-        float: left;
-        margin-left: col(4, 21);
+        float: right;
+        margin-right: s(203);
     }
 
     &__editable {
@@ -34,11 +35,11 @@
         & > .group {
             &:first-child > .field__label {
                 // margin-bottom: s(25, $s2);
-                @include hidden();
+                // @include hidden();
             }
             .field__container {
-                padding: 0;
-                border: none;
+                // padding: 0;
+                // border: none;
             }
         }
     }

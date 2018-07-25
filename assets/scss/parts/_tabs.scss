@@ -1,19 +1,30 @@
 .tabs {
 
     &__link {
-        padding: 10px 15px;
-        display: inline-block;
+        padding: 20px 15px;
+        display: block;
         border: 1px solid #ddd;
         border-radius: 3px;
         text-decoration: none;
         color: black;
         text-align: center;
         position: relative;
-        min-width: 100px;
-        margin-bottom: s(45);
+        width: 170px;
+        text-transform: uppercase;
+        font-size: s($s1);
+
+        &--errors {
+            color: $cAccent;
+        }
 
         &--active {
             font-weight: 700;
+
+            &:after {
+                @include icon(arrow_down);
+                font-size: s(8, $s1);
+                margin-left: s(5, 8);
+            }
         }
     }
 
@@ -23,6 +34,57 @@
 
         &--active {
             display: block;
+        }
+    }
+
+
+    &__header {
+        position: absolute;
+        right: 0;
+    }
+
+    &__dropdown {
+
+        .tabs__link {
+            @include hidden();
+
+            border-radius: 0;
+
+            & + .tabs__link {
+                border-top: none;
+            }
+        }
+
+        .tabs__toggle .tabs__link {
+            position: static;
+            border-radius: s(3, $s1);
+        }
+
+        .tabs__toggle ~ .tabs__link:last-child {
+            border-radius: 0 0 s(3, $s1) s(3, $s1);
+            border-bottom: 1px solid #ddd;
+        }
+
+        &--open {
+            .tabs__link {
+                position: static;
+            }
+
+            .tabs__toggle .tabs__link--active {
+                border-radius: s(3, $s1) s(3, $s1) 0 0;
+                border-bottom: none;
+
+                &:after {
+                    display: inline-block;
+                    transform: scaleY(-1);
+                    vertical-align: s(2, $s1);
+                }
+            }
+        }
+
+        &--errors {
+            border: 2px solid $cAccent;
+            border-radius: 4px;
         }
     }
 }

@@ -1,5 +1,5 @@
 .field {
-    max-width: s(570);
+    max-width: s(640);
 
     &.submit {
         padding: s(30) s(40);
@@ -9,4 +9,18 @@
         }
     }
 
+}
+
+.error {
+    font-size: 600;
+    color: red;
+    margin-bottom: 10px;
+
+    .field + & {
+        margin-top: 40px;
+    }
+}
+
+.repeater .repeater .field__footer {
+    margin-bottom: -96px;
 }

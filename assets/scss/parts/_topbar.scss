@@ -8,4 +8,16 @@
         line-height: s(42);
         transition: color 200ms $ease-out-quad;
     }
+
+    &__text {
+        width: 40%;
+    }
+
+    .btn {
+        float: right;
+    }
+
+    .searchbox {
+        float: right;
+    }
 }

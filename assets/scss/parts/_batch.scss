@@ -1,0 +1,34 @@
+.batch {
+    &__back {
+        width: 50%;
+        float: left;
+        
+    }
+
+    &__title {
+        font-size: 1.4em;
+        font-weight: bold;
+        display: block;
+        margin-bottom: s(10);
+        clear: both;
+        float: left;
+    }
+
+    &__downloads {
+        width: 50%;
+        float: right;
+        text-align: right;
+    }
+
+    .table {
+        clear: both;
+    }
+
+    .btn {
+        margin-bottom: 30px;
+    }
+
+    &__actions {
+        margin-top: 60px;
+    }
+}
