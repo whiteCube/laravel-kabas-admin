@@ -51,7 +51,7 @@ class Field
             return $this->prefixSubfields($subfields->options, $locale, $name);
         }
         foreach ($subfields as $key => $field) {
-            if (isset($field->options)) {
+            if (isset($field->options) && $field->type !== 'select') {
                 $this->prefixSubfields($field->options, $locale, $name . '[' . $key . ']');
             }
             $field->name = $locale . '|' . $name . '>' . $key;
