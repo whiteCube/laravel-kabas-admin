@@ -32,9 +32,9 @@ class Field
     public function isNestable()
     {
         return ($this->structure->type == 'repeater' ||
-                $this->structure->type == 'flexible' ||
-                $this->structure->type == 'group' ||
-                $this->structure->type == 'gallery');
+            $this->structure->type == 'flexible' ||
+            $this->structure->type == 'group' ||
+            $this->structure->type == 'gallery');
     }
 
     /**
@@ -47,6 +47,7 @@ class Field
     protected function prefixSubfields($subfields, $locale, $name)
     {
         if (!isset($subfields)) return;
+
         if (isset($subfields->options)) {
             return $this->prefixSubfields($subfields->options, $locale, $name);
         }
@@ -54,6 +55,7 @@ class Field
             if (isset($field->options) && $field->type !== 'select') {
                 $this->prefixSubfields($field->options, $locale, $name . '[' . $key . ']');
             }
+
             $field->name = $locale . '|' . $name . '>' . $key;
         }
     }
@@ -75,13 +77,13 @@ class Field
 
         $value = $this->value($locale);
 
-        if($this->type == 'model') {
+        if ($this->type == 'model') {
             $this->morphToSelect();
         }
 
         return '<genericfield 
                     name="' . $this->name($locale) . '" 
-                    description="'. $this->description .'"
+                    description="' . $this->description . '"
                     :structure="' . htmlspecialchars(json_encode($this->structure, ENT_QUOTES)) . '" 
                     :value="' . htmlspecialchars(json_encode($value->get() ?? '')) . '" ></genericfield>';
     }
@@ -99,6 +101,18 @@ class Field
     }
 
     /**
+     * Call a custom render process
+     * @param string $locale
+     * @return string
+     */
+    public function callUserSaveMethod($locale)
+    {
+        $parts = explode('@', $this->structure->controllers->save);
+        $controller = new $parts[0];
+        return call_user_func([$controller, $parts[1]], $this, $locale);
+    }
+
+    /**
      * Set the value of this field
      * @param mixed $value
      * @param string $locale
@@ -106,7 +120,7 @@ class Field
      */
     public function setValue($value, $locale = 'shared')
     {
-        if(isset($this->values[$locale])) {
+        if (isset($this->values[$locale])) {
             $this->values[$locale]->setRaw($value);
         } else {
             $this->values[$locale] = new Value($value, $this->type);
@@ -168,7 +182,7 @@ class Field
             $this->structure->options[$model->id] = $model->$label;
         }
 
-        if(!count($this->values)) return;
+        if (!count($this->values)) return;
 
         $items = [];
 
@@ -178,7 +192,7 @@ class Field
             }
             $this->values['shared']->setRaw($items);
         } else {
-            if($model = $this->values['shared']->get()) {
+            if ($model = $this->values['shared']->get()) {
                 $this->values['shared']->setRaw($model->id);
             }
         }

@@ -6,7 +6,8 @@ use ArrayIterator;
 use WhiteCube\Admin\Field;
 use WhiteCube\Admin\Facades\Admin;
 
-trait ContainsFields {
+trait ContainsFields
+{
 
     /**
      * The list of untranslated fields
@@ -67,7 +68,7 @@ trait ContainsFields {
     }
 
     /**
-     * Set all fields of the specified locale 
+     * Set all fields of the specified locale
      * to the specified values
      * @param array $values
      * @param string $locale
@@ -75,7 +76,7 @@ trait ContainsFields {
      */
     public function setAll($values, $locale)
     {
-        if(is_array($values)) $values = (object) $values;
+        if (is_array($values)) $values = (object)$values;
         foreach ($this->items as $key => $item) {
             $this->set($key, $values->$key ?? null, $locale);
         }
@@ -88,7 +89,7 @@ trait ContainsFields {
      */
     public function merge($data)
     {
-        foreach($data as $locale => $values) {
+        foreach ($data as $locale => $values) {
             $this->setAll($values, $locale);
         }
     }
@@ -100,7 +101,7 @@ trait ContainsFields {
      */
     public function fill($model)
     {
-        foreach($this->items as $key => $field) {
+        foreach ($this->items as $key => $field) {
             if (!in_array($key, $model->translatedAttributes ?? [])) {
                 $this->shared[] = $key;
                 $field->setValue($model->$key);
@@ -130,7 +131,7 @@ trait ContainsFields {
     {
         return count($this->translated) > 0;
     }
-    
+
     /**
      * Generate assoc array containing all values
      * @param locale $locale
@@ -139,9 +140,10 @@ trait ContainsFields {
     public function compress($locale)
     {
         $data = [];
-        foreach($this->items as $key => $field) {
+        foreach ($this->items as $key => $field) {
+            if ($field->type == 'custom') $field->callUserSaveMethod($locale);
             $data[$key] = $field->value($locale)->get();
-        } 
+        }
         return $data;
     }
 
