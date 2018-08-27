@@ -5,7 +5,8 @@ namespace WhiteCube\Admin\Request;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
-class FileUploader {
+class FileUploader
+{
 
     /**
      * The request instance
@@ -36,7 +37,8 @@ class FileUploader {
      */
     public function upload()
     {
-        $this->recursivelyUpload($this->request->all());
+        $values = $this->request->all();
+        $this->recursivelyUpload($values);
         return $this->fields;
     }
 
@@ -45,16 +47,25 @@ class FileUploader {
      * @param array $values
      * @return void
      */
-    protected function recursivelyUpload($values)
+    protected function recursivelyUpload($values, $path = null, $level = 0)
     {
-        if(!is_array($values)) return;
+        if (!is_array($values)) return;
+
         foreach ($values as $key => $value) {
 
             $isFile = $this->isFile($value);
             $hasBase64 = $this->hasBase64($value);
-            
-            if(!$isFile && !$hasBase64 && is_array($value)) {
-                $this->recursivelyUpload($value);
+
+            if ($level > 0) {
+                if ($isFile || $this->hasFile($value)) {
+                    $path[] = $key;
+                }
+            } else {
+                $path = [$key];
+            }
+
+            if (!$isFile && !$hasBase64 && is_array($value)) {
+                $this->recursivelyUpload($value, $path, $level + 1);
                 continue;
             }
 
@@ -65,12 +76,24 @@ class FileUploader {
             }
 
             if ($isFile) {
-                $value->move(public_path('storage/uploads/'), $name);
                 $name = $this->generateName($value->getClientOriginalExtension());
+                $value->move(public_path('storage/uploads/'), $name);
                 $this->replaceFileValue($path, $name);
             }
-
         }
+    }
+
+    protected function hasFile($values)
+    {
+        if ($this->isFile($values)) return true;
+        if (!is_array($values)) return false;
+        $hasFile = false;
+        foreach ($values as $index => $value) {
+            if ($this->isFile($value) || $this->hasFile($value)) {
+                $hasFile = true;
+            }
+        }
+        return $hasFile;
     }
 
     /**
@@ -83,11 +106,11 @@ class FileUploader {
     protected function setField($needle, &$haystack, $replace)
     {
         foreach ($haystack as $key => &$value) {
-            if(is_array($value)) {
+            if (is_array($value)) {
                 $this->setField($needle, $value, $replace);
                 continue;
             }
-            if($value == $needle) {
+            if ($value == $needle) {
                 $value = $replace;
             }
         }
@@ -101,7 +124,7 @@ class FileUploader {
      */
     protected function isFile($value)
     {
-        return is_object($value) && get_class($value) == UploadedFile::class;
+        return is_object($value) && str_contains(get_class($value), 'UploadedFile');
     }
 
     /**
@@ -111,7 +134,7 @@ class FileUploader {
      */
     protected function hasBase64($value)
     {
-        if(is_array($value)) return;
+        if (is_array($value)) return;
         return strpos($value, ';base64,') !== false;
     }
 
@@ -122,7 +145,7 @@ class FileUploader {
      */
     protected function uploadBase64(&$value)
     {
-        preg_replace_callback('/url\(data:image\/.*\)/', function($matches) use (&$value) {
+        preg_replace_callback('/url\(data:image\/.*\)/', function ($matches) use (&$value) {
             foreach ($matches as $key => $match) {
                 $name = $this->saveBase64File($match);
                 $value = str_replace($match, $name, $value);
@@ -142,7 +165,7 @@ class FileUploader {
         preg_match('/image\/(.[^;]*);/', $data, $extension);
         $image = base64_decode($base64_str);
         $name = 'storage/uploads/' . $this->generateName($extension[1]);
-        file_put_contents(public_path() .'/'. $name, $image);
+        file_put_contents(public_path() . '/' . $name, $image);
         return $name;
     }
 
@@ -163,9 +186,8 @@ class FileUploader {
      */
     protected function getPath($path)
     {
-        unset($path[count($path) - 1]);
-        if(!str_contains($path[0], '|')) return $path;
-        $exploded = explode('|',  $path[0]);
+        if (!str_contains($path[0], '|')) return $path;
+        $exploded = explode('|', $path[0]);
         $path[0] = $exploded[0];
         array_splice($path, 1, 0, $exploded[1]);
         return $path;
@@ -185,12 +207,12 @@ class FileUploader {
 
         foreach ($pathway as $i => $part) {
             $item = &$item[$part];
-            if($i == count($pathway) - 1) {
+            if ($i == count($pathway)) {
                 $alt = $item['alt'] ?? false;
             }
         }
 
-        $item = (object) ['path' => 'storage/uploads/' . $name, 'alt' => $alt];
+        $item = (object)['path' => 'storage/uploads/' . $name, 'alt' => $alt];
     }
 
 }
