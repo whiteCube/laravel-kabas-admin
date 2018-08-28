@@ -76,7 +76,7 @@ class FileUploader
             }
 
             if ($isFile) {
-                $name = $this->generateName($value->getClientOriginalExtension());
+                $name = $value->getClientOriginalName();
                 $value->move(public_path('storage/uploads/'), $name);
                 $this->replaceFileValue($path, $name);
             }
