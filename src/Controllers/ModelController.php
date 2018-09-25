@@ -78,7 +78,6 @@ class ModelController extends BaseController
         // determine it in the json file instead.
         $item = $model->find($request->id)->first();
 
-
         foreach ($bag->fields() as $key => $value) {
             $this->fill($model, $item, $key, $value);
         }
@@ -160,11 +159,34 @@ class ModelController extends BaseController
         foreach ($values as $key => $value) {
             $field = $model->fields()->get($key);
             if($field->type == 'flexible') {
-                $value = $_REQUEST[$locale . '|' . $key];
+                $value = $this->extractFiles($_REQUEST[$locale . '|' . $key]);
             }
             $value = new Value($value, $field->type);
             $item->translateOrNew($locale)->$key = $value->get();
         }
+    }
+
+    protected function extractFiles($json)
+    {
+        preg_match_all("/url\(data:?\w+\/(?<extension>\w+);(?<encoding>\w+),(?<data>[^\)]*)\)/", $json, $matches);
+        foreach($matches[0] as $index => $match) {
+            $image = base64_decode($matches['data'][$index]);
+            $generated = $this->generateName($matches['extension'][$index]);
+            $name = storage_path('app/public/uploads/' . $generated);
+            file_put_contents($name, $image);
+            $json = str_replace($match, 'uploads/' . $generated, $json);
+        }
+        return $json;
+    }
+
+    /**
+     * Generate a hashed name
+     * @param string $extension
+     * @return string
+     */
+    protected function generateName($extension)
+    {
+        return sha1(microtime()) . '.' . $extension;
     }
 
     public function add($file)
