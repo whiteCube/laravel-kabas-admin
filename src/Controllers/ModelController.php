@@ -159,6 +159,9 @@ class ModelController extends BaseController
     {
         foreach ($values as $key => $value) {
             $field = $model->fields()->get($key);
+            if($field->type == 'flexible') {
+                $value = $_REQUEST[$locale . '|' . $key];
+            }
             $value = new Value($value, $field->type);
             $item->translateOrNew($locale)->$key = $value->get();
         }
@@ -191,6 +194,8 @@ class ModelController extends BaseController
         $item = new $classname;
 
         $this->runValidation($model->structure()->validation(), $request);
+
+        $item->save();
 
         foreach ($bag->fields() as $key => $value) {
             $this->fill($model, $item, $key, $value);
