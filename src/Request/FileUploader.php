@@ -52,20 +52,20 @@ class FileUploader
         if (!is_array($values)) return;
 
         foreach ($values as $key => $value) {
-
+            $newpath = $path;
             $isFile = $this->isFile($value);
             $hasBase64 = $this->hasBase64($value);
 
             if ($level > 0) {
                 if ($isFile || $this->hasFile($value)) {
-                    $path[] = $key;
+                    $newpath[] = $key;
                 }
             } else {
-                $path = [$key];
+                $newpath = [$key];
             }
 
             if (!$isFile && !$hasBase64 && is_array($value)) {
-                $this->recursivelyUpload($value, $path, $level + 1);
+                $this->recursivelyUpload($value, $newpath, $level + 1);
                 continue;
             }
 
@@ -78,7 +78,7 @@ class FileUploader
             if ($isFile) {
                 $name = $value->getClientOriginalName();
                 $value->move(storage_path('app/public/uploads/'), $name);
-                $this->replaceFileValue($path, $name);
+                $this->replaceFileValue($newpath, $name);
             }
         }
     }
@@ -165,7 +165,7 @@ class FileUploader
         preg_match('/image\/(.[^;]*);/', $data, $extension);
         $image = base64_decode($base64_str);
         $name = storage_path('app/public/uploads/' . $this->generateName($extension[1]));
-        file_put_contents(public_path() . '/' . $name, $image);
+        file_put_contents($name, $image);
         return $name;
     }
 
