@@ -21,7 +21,7 @@ class ModelController extends BaseController
         
         if($request->search) {
             $sql = str_replace('%s', '%' . $request->search . '%', $model->structure()->search());
-            $sql = str_replace('%i', $request->search, $model->structure()->search());
+            $sql = str_replace('%i', $request->search, $sql);
             $items = call_user_func($model->config()->model() . '::hydrate', DB::select($sql));
         } else {
             $items = $model->all();
