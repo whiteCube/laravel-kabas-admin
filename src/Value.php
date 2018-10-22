@@ -99,7 +99,11 @@ class Value {
     {
         if(is_string($this->raw)) {
             $data = json_decode($this->raw);
-            $data->path = asset($data->path);
+            if(isset($data->file)) {
+                $data->path = asset($data->file->path);
+            } else {
+                $data->path = asset($data->path);
+            }
             return $data;
         }
         return $this->raw;

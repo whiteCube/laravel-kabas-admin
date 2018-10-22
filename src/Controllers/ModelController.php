@@ -18,7 +18,7 @@ class ModelController extends BaseController
         $model = Admin::models()->get($route);
 
         $items = $model;
-        
+
         if($request->search) {
             $sql = str_replace('%s', '%' . $request->search . '%', $model->structure()->search());
             $sql = str_replace('%i', $request->search, $sql);
@@ -101,9 +101,8 @@ class ModelController extends BaseController
         if (in_array($key, Admin::locales())) {
             $this->addTranslatedValues($model, $item, $key, $value);
         } else {
-
             if ($field->type == 'image' || $field->type == 'file') {
-                if (isset($value['file']) && $file = $value['file']) {
+                if (isset($value['file']) && $file = $value['file'] && $this->isFile($value)) {
                     $path = $file->store('uploads', 'public');
                     $value['path'] = 'storage/' . $path;
                 }
@@ -251,5 +250,16 @@ class ModelController extends BaseController
     public function runValidation($rules, $data)
     {
         $this->validate($data, $rules);
+    }
+
+
+    /**
+     * Check if value is an uploaded file
+     * @param mixed $value
+     * @return boolean
+     */
+    protected function isFile($value)
+    {
+        return is_object($value) && str_contains(get_class($value), 'UploadedFile');
     }
 }
