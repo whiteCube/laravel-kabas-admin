@@ -89,6 +89,7 @@ trait ContainsFields
      */
     public function merge($data)
     {
+        if(!$data) return;
         foreach ($data as $locale => $values) {
             $this->setAll($values, $locale);
         }
