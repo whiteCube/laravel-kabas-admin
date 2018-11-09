@@ -216,6 +216,8 @@ class ModelController extends BaseController
 
         $this->runValidation($model->structure()->validation(), $request);
 
+        $item->save();
+
         foreach ($bag->fields() as $key => $value) {
             $this->fill($model, $item, $key, $value);
         }
