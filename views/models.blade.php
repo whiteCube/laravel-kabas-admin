@@ -19,19 +19,23 @@
             @foreach($model->config()->columns() as $key => $column)
             <tableheading {{ (isset($column->main) && $column->main) ? 'main' : '' }} id="{{ $key }}">{{ $column->title }}</tableheading>
             @endforeach
+            @unless($model->config()->noDelete())
             <tableheading right id="actions">Actions</tableheading>
+            @endif
         </tablerow>
         @foreach($items as $item)
         <tablerow href="{{ route('kabas.admin.model.item', ['file' => $model->structure()->route(), 'id' => $item->id]) }}">
             @foreach($model->config()->columns() as $key => $column)
             <tablecell label="{{ $key }}">{{ $item->$key }}</tablecell>
             @endforeach
+            @unless($model->config()->noDelete())
             <tablecell right label="actions">
                 <form action="{{ route('kabas.admin.model.delete', ['file' => $model->structure()->route(), 'id' => $item->id]) }}" method="POST">
                     {{ csrf_field() }}
                     <input type="submit" class="btn btn--tiny btn--primary" value="Delete">
                 </form>
             </tablecell>
+            @endif
         </tablerow>
         @endforeach
     </ktable>
