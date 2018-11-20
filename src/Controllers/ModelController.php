@@ -3,6 +3,7 @@
 namespace WhiteCube\Admin\Controllers;
 
 use Carbon\Carbon;
+use Illuminate\Pagination\LengthAwarePaginator;
 use WhiteCube\Admin\Value;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -23,8 +24,12 @@ class ModelController extends BaseController
             $sql = str_replace('%s', '%' . $request->search . '%', $model->structure()->search());
             $sql = str_replace('%i', $request->search, $sql);
             $items = call_user_func($model->config()->model() . '::hydrate', DB::select($sql));
+            $items = new LengthAwarePaginator($items, count($items), 25, request()->page, [
+                'path' => request()->url,
+                'query' => request()->query()
+            ]);
         } else {
-            $items = $model->all();
+            $items = $model->paginate(25);
         }
 
         $items = $this->getRelatedData($model, $items);
@@ -215,8 +220,6 @@ class ModelController extends BaseController
         $item = new $classname;
 
         $this->runValidation($model->structure()->validation(), $request);
-
-        $item->save();
 
         foreach ($bag->fields() as $key => $value) {
             $this->fill($model, $item, $key, $value);

@@ -60,11 +60,9 @@ class Model {
         return call_user_func($method, $params);
     }
 
-
-    public function all()
+    public function paginate($amount)
     {
-        $builder = call_user_func_array($this->config->model() . '::orderBy', ['column' => 'id', 'direction' => 'desc']);
-        return $builder->get();
+        return call_user_func($this->config->model() . '::paginate', $amount);
     }
 
 }
