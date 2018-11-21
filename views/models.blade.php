@@ -19,7 +19,7 @@
             @foreach($model->config()->columns() as $key => $column)
             <tableheading {{ (isset($column->main) && $column->main) ? 'main' : '' }} id="{{ $key }}">{{ $column->title }}</tableheading>
             @endforeach
-            @unless($model->config()->noDelete())
+            @if(null === ($model->config()->deleteButton()) || $model->config()->deleteButton())
             <tableheading right id="actions">Actions</tableheading>
             @endif
         </tablerow>
@@ -28,7 +28,7 @@
             @foreach($model->config()->columns() as $key => $column)
             <tablecell label="{{ $key }}">{{ $item->$key }}</tablecell>
             @endforeach
-            @unless($model->config()->noDelete())
+            @if(null === ($model->config()->deleteButton()) || $model->config()->deleteButton())
             <tablecell right label="actions">
                 <form action="{{ route('kabas.admin.model.delete', ['file' => $model->structure()->route(), 'id' => $item->id]) }}" method="POST">
                     {{ csrf_field() }}
@@ -39,6 +39,7 @@
         </tablerow>
         @endforeach
     </ktable>
+        {{ $items->links() }}
     @else 
     <div class="message">
         <illu class="message__illu" type="tex"></illu>

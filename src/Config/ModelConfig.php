@@ -30,6 +30,13 @@ class ModelConfig {
      * @var bool
      */
     protected $createButton;
+    protected $columns;
+
+    /**
+     * Should we show the delete button on the list page
+     * @var bool
+     */
+    protected $deleteButton;
 
     /**
      * Create an instance
@@ -41,6 +48,7 @@ class ModelConfig {
         $this->model = $structure->model;
         $this->columns = $structure->columns;
         $this->createButton = $structure->createButton ?? null;
+        $this->deleteButton = $structure->deleteButton ?? null;
     }
 
 }
