@@ -29,7 +29,7 @@ class ModelController extends BaseController
             $items = call_user_func($model->config()->model() . '::hydrate', DB::select($sql));
         } else {
             if($model->structure()->order()) {
-                $items = $model->orderBy('created_at DESC')->get();
+                $items = $model->orderBy($model->structure()->order())->get();
             } else {
                 $items = $model->get();
             }
