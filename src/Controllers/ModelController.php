@@ -134,6 +134,7 @@ class ModelController extends BaseController
 
 
                 if($relation == 'BelongsToMany') {
+                    $item->save();
                     return $item->$key()->sync($value->get());
                 } else if($relation == 'BelongsTo') {
                     return $item->$key()->associate($value->get());
