@@ -23,14 +23,22 @@ class ModelController extends BaseController
         if($request->search) {
             $sql = str_replace('%s', '%' . $request->search . '%', $model->structure()->search());
             $sql = str_replace('%i', $request->search, $sql);
+            if($model->structure()->order()) {
+                $sql .= ' ORDER BY ' . $model->structure()->order();
+            }
             $items = call_user_func($model->config()->model() . '::hydrate', DB::select($sql));
-            $items = new LengthAwarePaginator($items, count($items), 25, request()->page, [
-                'path' => request()->url,
-                'query' => request()->query()
-            ]);
         } else {
-            $items = $model->paginate(25);
+            if($model->structure()->order()) {
+                $items = $model->orderBy('created_at DESC')->get();
+            } else {
+                $items = $model->get();
+            }
         }
+
+        $items = new LengthAwarePaginator($items, count($items), 25, request()->page, [
+            'path' => request()->url,
+            'query' => request()->query()
+        ]);
 
         $items = $this->getRelatedData($model, $items);
 
