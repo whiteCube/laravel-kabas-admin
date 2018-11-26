@@ -30,7 +30,6 @@ class ModelConfig {
      * @var bool
      */
     protected $createButton;
-    protected $columns;
 
     /**
      * Should we show the delete button on the list page
