@@ -68,4 +68,15 @@ class FieldsContainer implements IteratorAggregate {
         }, ARRAY_FILTER_USE_KEY);
     }
 
+    public function find($path)
+    {
+        $pathParts = explode('.', $path);
+        $result = $this->items;
+        foreach($pathParts as $part) {
+            if(!isset($result[$part])) return false;
+            $result = $result[$part];
+        }
+        return $result;
+    }
+
 }

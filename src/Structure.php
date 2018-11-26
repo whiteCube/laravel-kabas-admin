@@ -100,6 +100,15 @@ class Structure {
         return $this->content->kabas->search_query ?? false;
     }
 
+    /**
+     * Returns the ORDER BY clause if there is one
+     * @return string?
+     */
+    public function order()
+    {
+        return $this->content->kabas->orderBy ?? false;
+    }
+
     public function validation()
     {
         $rules = [];

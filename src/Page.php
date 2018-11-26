@@ -96,7 +96,76 @@ class Page {
             $fields = $this->fields->compress($locale);
             $data['meta'] = $meta;
             $data = array_merge($data, $fields);
+            $data = $this->fixImagePaths($data);
             Storage::update($locale, $this->structure->file(), $data);
         }
+    }
+
+    protected function fixImagePaths($data) {
+        $this->path = '';
+        $structure = $this->structure()->content();
+        foreach($data as $key => $value) {
+            if(!isset($structure->$key)) continue;
+            $struct = $structure->$key;
+            $this->path = $key;
+            if($struct->type == 'group') {
+                $this->sanitizeRepeatable($struct, $data);
+            }
+
+            if($struct->type == 'image') {
+                $this->sanitizeImage($struct, $data);
+            }
+        }
+
+        return $data;
+    }
+
+    protected function sanitizeRepeatable($structure, &$data)
+    {
+        foreach($structure->options as $key => $option) {
+            if($option->type == 'group') {
+                $this->path .= '.' . $key;
+                return $this->sanitizeRepeatable($option, $data);
+            }
+            if($option->type != 'image') continue;
+            $path = $this->path .= '.' . $key;
+            $this->sanitizeImage($data, $path);
+        }
+    }
+
+    protected function sanitizeImage(&$data, $path) {
+        $value = $this->getValue($data, $path);
+        if(isset($value['file'])) {
+            $value['path'] = $value['file']->path;
+            unset($value['file']);
+        }
+
+        $this->setValue($data, $path, $value);
+    }
+
+    protected function getValue(&$data, $path)
+    {
+        $pathParts = explode('.', $path);
+        $result = $data;
+        foreach($pathParts as $part) {
+            if(!isset($result[$part])) return false;
+            $result = $result[$part];
+        }
+        return $result;
+    }
+
+    protected function setValue(&$array, $path, &$value, $delimiter = '.') {
+        $pathParts = explode($delimiter, $path);
+
+        $current = &$array;
+        foreach($pathParts as $key) {
+            if (!is_array($current)) { $current = array(); }
+            $current = &$current[$key];
+        }
+
+        $backup = $current;
+        $current = $value;
+
+        return $backup;
     }
 }

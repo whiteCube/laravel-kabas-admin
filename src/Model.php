@@ -60,6 +60,11 @@ class Model {
         return call_user_func($method, $params);
     }
 
+    public function orderBy($orderby)
+    {
+        return call_user_func($this->config->model() . '::orderByRaw', $orderby);
+    }
+
     public function paginate($amount)
     {
         return call_user_func($this->config->model() . '::paginate', $amount);
