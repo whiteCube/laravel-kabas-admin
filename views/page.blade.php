@@ -10,7 +10,7 @@
         {{--  <a class="topbar__link link" target="_blank" href="{{ route($page->route()) }}">Voir la page</a>  --}}
         @endif
     </div>
-    <form class="page__form" method="POST" action="{{ route('kabas.admin.page.submit') }}" enctype="multipart/form-data">
+    <form class="page__form" method="POST" action="{{ route('kabas.admin.page.submit') }}" enctype="multipart/form-data" novalidate>
         {{ csrf_field() }}
         <input name="route" type="hidden" value="{{ $page->route() }}">
         <div class="tabs">
