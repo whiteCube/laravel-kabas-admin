@@ -4,7 +4,7 @@
 <section class="page">
     <div class="topbar">
         <h2 class="topbar__title">{{ $model->config()->name() }}</h2>
-        <a href="{{ route('kabas.admin.model', ['file' => $model->structure()->file()]) }}" class="topbar__link link">Back to list</a>
+        <a href="{{ route('kabas.admin.model', ['route' => $model->structure()->route()]) }}" class="topbar__link link">Back to list</a>
     </div>
 
     <form class="page__form" enctype="multipart/form-data" method="POST" action="{{ route('kabas.admin.model.create', ['file' => $model->structure()->route()]) }}" novalidate>
@@ -52,7 +52,7 @@
                     @endforeach
                     </ul>
                 </div>
-                
+
                 <div class="page__editables">
                     <div class="page__editable page__editable--general" id="shared-kabas-general">
                         @foreach ($shared as $key)
