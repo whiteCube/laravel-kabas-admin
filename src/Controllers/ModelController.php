@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace WhiteCube\Admin\Controllers;
 
@@ -35,7 +35,7 @@ class ModelController extends BaseController
             }
         }
 
-        $items = new LengthAwarePaginator($items, count($items), 25, request()->page, [
+        $items = new LengthAwarePaginator($items->forPage($request->page, 25), count($items), 25, request()->page, [
             'path' => request()->url,
             'query' => request()->query()
         ]);
@@ -61,7 +61,7 @@ class ModelController extends BaseController
                 $relatedColumn = $column->column;
                 $item->$key = $related->$relatedColumn ?? '';
             }
-        
+
         }
 
         return $items;
@@ -86,7 +86,7 @@ class ModelController extends BaseController
         $model = Admin::models()->get($structure);
 
         $this->runValidation($model->structure()->validation(), $request);
-        
+
         // TODO: Do not hardcode 'id' as the primary key,
         // determine it in the json file instead.
         $item = $model->find($request->id)->first();
@@ -131,11 +131,11 @@ class ModelController extends BaseController
                     $value->setRaw(null);
                 }
             }
-            
+
             if($value->type() == 'checkbox') {
                 if($value->get() == '1') $value->setRaw(true);
                 else $value->setRaw(false);
-            } 
+            }
 
             if($value->type() == 'model') {
                 $relation = class_basename($item->$key());
@@ -211,10 +211,10 @@ class ModelController extends BaseController
         $shared = array_diff(array_keys($model->fields()->all()), $instance->translatedAttributes ?? []);
 
         return view('admin::add-model')->with([
-            'model' => $model, 
+            'model' => $model,
             'instance' => new $classname,
             'translated' => $translated,
-            'shared' => $shared 
+            'shared' => $shared
         ]);
     }
 

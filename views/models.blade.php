@@ -40,12 +40,12 @@
         @endforeach
     </ktable>
         {{ $items->links() }}
-    @else 
+    @else
     <div class="message">
         <illu class="message__illu" type="tex"></illu>
         <p class="message__text">Nothing to show</p>
     </div>
     @endif
-    
-    
+
+
 @endsection
