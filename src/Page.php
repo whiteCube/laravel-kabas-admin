@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace WhiteCube\Admin;
 
@@ -36,7 +36,7 @@ class Page {
      * @var MetaContainer
      */
     protected $meta;
-    
+
     /**
      * Internal configuration for this page
      * @var PageConfig
@@ -108,6 +108,9 @@ class Page {
             if(!isset($structure->$key)) continue;
             $struct = $structure->$key;
             $this->path = $key;
+
+            if(!isset($struct->type)) continue;
+
             if($struct->type == 'group') {
                 $this->sanitizeRepeatable($struct, $data);
             }
