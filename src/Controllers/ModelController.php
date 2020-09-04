@@ -111,6 +111,14 @@ class ModelController extends BaseController
     {
         $field = $model->fields()->get($key);
 
+        if($field->type == 'password') {
+            if(!$value) {
+                return;
+            }
+
+            $value = bcrypt($value);
+        }
+
         if (in_array($key, Admin::locales())) {
             $this->addTranslatedValues($model, $item, $key, $value);
         } else {
