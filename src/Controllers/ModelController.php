@@ -28,10 +28,14 @@ class ModelController extends BaseController
             }
             $items = call_user_func($model->config()->model() . '::hydrate', DB::select($sql));
         } else {
-            if($model->structure()->order()) {
-                $items = $model->orderBy($model->structure()->order())->get();
+            if ($model->config()->filters() && $this->hasFilter($model, $request)) {
+                $items = $this->getFilteredItems($model, $request);
             } else {
-                $items = $model->get();
+                if($model->structure()->order()) {
+                    $items = $model->orderBy($model->structure()->order())->get();
+                } else {
+                    $items = $model->get();
+                }
             }
         }
 
@@ -46,6 +50,31 @@ class ModelController extends BaseController
             'model' => $model,
             'items' => $items
         ]);
+    }
+
+    protected function hasFilter($model, $request)
+    {
+        foreach($model->config()->filters() as $key => $filter) {
+            if ($request->has($key)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    protected function getFilteredItems($model, $request)
+    {
+        $results = $model->config()->model()::all();
+
+        foreach($model->config()->filters() as $key => $filter) {
+            if ($request->has($key)) {
+                $items = call_user_func($model->config()->model() . '::hydrate', DB::select($filter->query));
+                $results = $results->intersect($items);
+            }
+        }
+
+        return $results;
     }
 
     public function getRelatedData($model, $items)

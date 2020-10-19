@@ -26,6 +26,11 @@ class ModelConfig {
     protected $columns;
 
     /**
+     * The filters
+     */
+    protected $filters;
+
+    /**
      * Should we show the create button on the list page
      * @var bool
      */
@@ -45,6 +50,7 @@ class ModelConfig {
     {
         $this->name = $structure->name;
         $this->model = $structure->model;
+        $this->filters = isset($structure->filters) ? $structure->filters : null;
         $this->columns = $structure->columns;
         $this->createButton = $structure->createButton ?? null;
         $this->deleteButton = $structure->deleteButton ?? null;

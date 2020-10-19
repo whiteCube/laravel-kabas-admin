@@ -13,6 +13,19 @@
         <searchbox action="#" placeholder="Search..." btntext="Search" value="{{ request()->search }}" name="search"></searchbox>
         @endif
     </div>
+    @if($model->config()->filters())
+        <form method="GET" class="filters">
+            <div class="filters__items">
+                @foreach($model->config()->filters() as $key => $filter)
+                    <div class="field checkbox filters__item">
+                        <input class="field__element" type="checkbox" name="{{$key}}" id="{{ $key}}" {{ request()->get($key) ? 'checked' : '' }}>
+                        <label class="field__label" for="{{ $key}}">{{$filter->label}}</label>
+                    </div>
+                @endforeach
+            </div>
+            <button class="btn" type="submit">Appliquer les filtres</button>
+        </form>
+    @endif
     @if($items->count())
     <ktable>
         <tablerow>
