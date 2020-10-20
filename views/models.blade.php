@@ -1,6 +1,7 @@
 @extends('admin::layout')
 
 @section('main')
+<form method="GET">
     <div class="topbar">
         <div class="topbar__text">
             <h2 class="topbar__title">{{ $model->config()->name() }}</h2>
@@ -10,11 +11,11 @@
         <btn primary icon="pages" href="{{ route('kabas.admin.model.add', ['file' => $model->structure()->route()]) }}">New entry</btn>
         @endif
         @if($model->structure()->search())
-        <searchbox action="#" placeholder="Search..." btntext="Search" value="{{ request()->search }}" name="search"></searchbox>
+        <searchfield placeholder="Search..." btntext="Search" value="{{ request()->search }}" name="search"></searchfield>
         @endif
     </div>
     @if($model->config()->filters())
-        <form method="GET" class="filters">
+        <div class="filters">
             <div class="filters__items">
                 @foreach($model->config()->filters() as $key => $filter)
                     <div class="field checkbox filters__item">
@@ -24,8 +25,9 @@
                 @endforeach
             </div>
             <button class="btn" type="submit">Appliquer les filtres</button>
-        </form>
+        </div>
     @endif
+</form>
     @if($items->count())
     <ktable>
         <tablerow>

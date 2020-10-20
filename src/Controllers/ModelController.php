@@ -20,35 +20,36 @@ class ModelController extends BaseController
 
         $items = $model;
 
+        $results = $model->config()->model()::orderBy('id', 'desc');
+
+        if ($model->structure()->order()) {
+            $results = $results->orderByRaw($model->structure()->order());
+        }
+
+        $results = $results->get();
+
         if($request->search) {
             $sql = str_replace('%s', '%' . $request->search . '%', $model->structure()->search());
             $sql = str_replace('%i', $request->search, $sql);
-            if($model->structure()->order()) {
-                $sql .= ' ORDER BY ' . $model->structure()->order();
-            }
             $items = call_user_func($model->config()->model() . '::hydrate', DB::select($sql));
-        } else {
-            if ($model->config()->filters() && $this->hasFilter($model, $request)) {
-                $items = $this->getFilteredItems($model, $request);
-            } else {
-                if($model->structure()->order()) {
-                    $items = $model->orderBy($model->structure()->order())->get();
-                } else {
-                    $items = $model->get();
-                }
-            }
+            $results = $results->intersect($items);
         }
 
-        $items = new LengthAwarePaginator($items->forPage($request->page, 25), count($items), 25, request()->page, [
+        if ($model->config()->filters() && $this->hasFilter($model, $request)) {
+            $items = $this->getFilteredItems($model, $request);
+            $results = $results->intersect($items);
+        }
+
+        $results = new LengthAwarePaginator($results->forPage($request->page, 25), count($results), 25, request()->page, [
             'path' => request()->url,
             'query' => request()->query()
         ]);
 
-        $items = $this->getRelatedData($model, $items);
+        $results = $this->getRelatedData($model, $results);
 
         return view('admin::models')->with([
             'model' => $model,
-            'items' => $items
+            'items' => $results
         ]);
     }
 
