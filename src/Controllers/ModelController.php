@@ -141,7 +141,7 @@ class ModelController extends BaseController
     {
         $field = $model->fields()->get($key);
 
-        if($field->type == 'password') {
+        if($field && $field->type == 'password') {
             if(!$value) {
                 return;
             }
